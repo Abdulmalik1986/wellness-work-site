@@ -636,6 +636,7 @@ function Founder() {
           <div className="person-photo">
             <image-slot
               id="founder-photo"
+              src="images/founder.webp"
               shape="rounded"
               radius="12"
               fit="contain"
@@ -712,6 +713,7 @@ function Trainer() {
           <div className="person-photo">
             <image-slot
               id="trainer-photo"
+              src="images/trainer.webp"
               shape="rounded"
               radius="12"
               fit="contain"
