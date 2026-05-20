@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Wellness Work Site
 
 برنامج علاجي تفاعلي مبني على React و Supabase
@@ -89,3 +90,6 @@ wellness-work-site/
 ---
 
 تم التحديث: 2025-05-20
+=======
+موقع علاجي تفاعلي مبني على React و Supabase
+>>>>>>> 3ba0b3101b68e83af25e0cceb7adcf343e205849
