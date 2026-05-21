@@ -1,0 +1,756 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>الهولنس وورك — مسار التأمل البسيط</title>
+<meta name="description" content="جرّب تقنية الهولنس وورك في تجربةٍ تأمّليةٍ قصيرة — بلا تسجيل، بلا تعقيد، فقط أنتَ ووعيك الداخلي.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#102a3a;
+    --ink-soft:#3a566a;
+    --ink-faint:#8aa0ad;
+    --bg-deep:#0c2030;
+    --bg-1:#0f2a3e;
+    --bg-2:#1c4a6a;
+    --bg-3:#2a8db8;
+    --accent:#d9b870;
+    --accent-soft:#efd9a1;
+    --paper:#f6f1e6;
+    --paper-warm:#faf5ea;
+    --line:rgba(217,184,112,.28);
+    --radius:18px;
+    --radius-sm:12px;
+    --shadow:0 30px 80px -20px rgba(8,20,35,.45), 0 2px 6px rgba(8,20,35,.15);
+    --serif:"Amiri","Noto Naskh Arabic",serif;
+    --sans:"Tajawal","Noto Naskh Arabic",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;height:100%}
+  body{
+    font-family:var(--sans);
+    color:var(--ink);
+    background:
+      radial-gradient(1200px 800px at 20% 0%, #1c4a6a 0%, transparent 55%),
+      radial-gradient(1000px 700px at 90% 100%, #0e3a52 0%, transparent 55%),
+      linear-gradient(165deg, var(--bg-deep) 0%, var(--bg-1) 50%, #0a1c2a 100%);
+    background-attachment: fixed;
+    min-height:100dvh;
+    overflow-x:hidden;
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  .stars{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .stars span{
+    position:absolute;border-radius:50%;
+    background:rgba(255,255,255,.5);
+    animation:twinkle 6s ease-in-out infinite;
+  }
+  @keyframes twinkle{
+    0%,100%{opacity:.15;transform:scale(.9)}
+    50%{opacity:.65;transform:scale(1.1)}
+  }
+  .stage{
+    position:relative;z-index:1;
+    min-height:100dvh;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    padding:48px 22px 32px;
+  }
+  .brandbar{
+    position:fixed;top:20px;right:24px;left:24px;z-index:5;
+    display:flex;justify-content:space-between;align-items:center;
+    color:rgba(246,241,230,.78);font-size:13px;letter-spacing:.04em;
+    pointer-events:none;
+  }
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand-mark{
+    width:22px;height:22px;border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, var(--accent-soft), var(--accent) 60%, #8a6a2a);
+    box-shadow:0 0 18px rgba(217,184,112,.55);
+  }
+  .brand-name{font-family:var(--serif);font-size:15px;color:var(--paper)}
+  .stepdot{font-variant-numeric:tabular-nums;color:rgba(246,241,230,.55)}
+  .card{
+    width:min(680px, 100%);
+    background:linear-gradient(180deg, var(--paper-warm) 0%, var(--paper) 100%);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:clamp(28px, 5vw, 56px) clamp(22px, 5vw, 52px);
+    position:relative;
+    overflow:hidden;
+    animation:enter .9s cubic-bezier(.2,.7,.2,1);
+  }
+  .card::before{
+    content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(600px 200px at 50% -10%, rgba(217,184,112,.18), transparent 60%),
+      radial-gradient(500px 250px at 50% 110%, rgba(42,141,184,.08), transparent 60%);
+    pointer-events:none;
+  }
+  @keyframes enter{
+    from{opacity:0;transform:translateY(14px) scale(.985)}
+    to{opacity:1;transform:translateY(0) scale(1)}
+  }
+  .breath{
+    width:84px;height:84px;border-radius:50%;
+    margin:0 auto 26px;
+    background:radial-gradient(circle at 35% 35%, #fff, var(--accent-soft) 35%, var(--accent) 70%, #b08a3a);
+    box-shadow:0 0 0 0 rgba(217,184,112,.55);
+    animation:breath 5.5s ease-in-out infinite;
+    position:relative;
+  }
+  @keyframes breath{
+    0%,100%{transform:scale(.92);box-shadow:0 0 0 0 rgba(217,184,112,.45)}
+    50%{transform:scale(1.06);box-shadow:0 0 0 22px rgba(217,184,112,0)}
+  }
+  .eyebrow{
+    text-align:center;
+    font-family:var(--serif);
+    color:var(--ink-faint);
+    font-size:14px;letter-spacing:.18em;
+    text-transform:none;margin-bottom:6px;
+  }
+  h1.title{
+    font-family:var(--serif);
+    text-align:center;
+    margin:0 0 14px;
+    font-size:clamp(26px, 4.5vw, 36px);
+    color:var(--ink);
+    font-weight:700;
+    line-height:1.4;
+  }
+  .lede{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:clamp(15px, 2.4vw, 17px);
+    max-width:54ch;margin:0 auto 8px;
+  }
+  .ornament{
+    display:flex;align-items:center;justify-content:center;gap:14px;
+    color:var(--accent);font-size:12px;margin:18px auto 8px;
+  }
+  .ornament::before,.ornament::after{
+    content:"";height:1px;width:48px;background:linear-gradient(to right, transparent, var(--accent), transparent);
+  }
+  .prompt{
+    font-family:var(--serif);
+    font-size:clamp(20px, 3.2vw, 24px);
+    color:var(--ink);
+    text-align:center;
+    line-height:1.55;
+    margin:8px auto 6px;
+    max-width:36ch;
+  }
+  .hint{
+    text-align:center;
+    color:var(--ink-faint);
+    font-size:14px;
+    margin:0 auto 22px;
+    max-width:46ch;
+  }
+  .field{display:block;margin:18px auto 0;max-width:520px}
+  .field input[type=text],.field textarea{
+    width:100%;
+    background:#fff;
+    border:1px solid rgba(58,86,106,.18);
+    border-radius:var(--radius-sm);
+    padding:14px 16px;
+    font:inherit;font-size:16px;color:var(--ink);
+    box-shadow:inset 0 1px 2px rgba(8,20,35,.04);
+    transition:border-color .25s ease, box-shadow .25s ease;
+    text-align:right;
+  }
+  .field textarea{min-height:88px;resize:vertical}
+  .field input:focus,.field textarea:focus{
+    outline:none;border-color:var(--bg-3);
+    box-shadow:0 0 0 4px rgba(42,141,184,.14);
+  }
+  .choices{
+    display:flex;flex-wrap:wrap;justify-content:center;gap:10px;
+    max-width:560px;margin:8px auto 4px;
+  }
+  .choice{
+    appearance:none;cursor:pointer;
+    border:1px solid rgba(58,86,106,.22);
+    background:#fff;color:var(--ink);
+    padding:11px 18px;border-radius:999px;
+    font:inherit;font-size:15px;
+    transition:all .2s ease;
+    box-shadow:0 1px 2px rgba(8,20,35,.04);
+  }
+  .choice:hover{border-color:var(--bg-3);transform:translateY(-1px)}
+  .choice.selected{
+    background:linear-gradient(180deg, #2f9bcc, #1f6b96);
+    color:#fff;border-color:transparent;
+    box-shadow:0 6px 16px -4px rgba(42,141,184,.5);
+  }
+  .spectrum{
+    display:grid;grid-template-columns:repeat(7, 1fr);
+    gap:6px;max-width:560px;margin:12px auto 6px;
+  }
+  .spec-dot{
+    appearance:none;border:none;cursor:pointer;
+    background:rgba(42,141,184,.1);
+    aspect-ratio:1/1;border-radius:50%;
+    position:relative;transition:all .2s ease;
+  }
+  .spec-dot::after{
+    content:attr(data-label);
+    position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);
+    font-size:11px;color:var(--ink-faint);white-space:nowrap;
+    opacity:0;transition:opacity .2s;
+  }
+  .spec-dot:hover::after{opacity:1}
+  .spec-dot:hover{background:rgba(42,141,184,.25)}
+  .spec-dot.selected{background:linear-gradient(180deg, #2f9bcc, #1f6b96);box-shadow:0 4px 12px -2px rgba(42,141,184,.5)}
+  .spec-labels{
+    display:flex;justify-content:space-between;max-width:560px;margin:30px auto 0;
+    color:var(--ink-faint);font-size:13px;
+  }
+  .actions{
+    display:flex;justify-content:center;gap:12px;flex-wrap:wrap;
+    margin-top:32px;
+  }
+  .btn{
+    appearance:none;cursor:pointer;
+    border:none;font:inherit;font-size:16px;font-weight:500;
+    padding:13px 28px;border-radius:999px;
+    transition:all .25s ease;
+    letter-spacing:.01em;
+  }
+  .btn-primary{
+    background:linear-gradient(180deg, var(--bg-3), #1f6b96);
+    color:#fff;
+    box-shadow:0 10px 24px -8px rgba(42,141,184,.6);
+  }
+  .btn-primary:hover{transform:translateY(-1px);box-shadow:0 14px 28px -8px rgba(42,141,184,.7)}
+  .btn-primary:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+  .btn-ghost{
+    background:transparent;color:var(--ink-soft);
+    border:1px solid rgba(58,86,106,.22);
+  }
+  .btn-ghost:hover{border-color:var(--ink-soft);color:var(--ink)}
+  .btn-accent{
+    background:linear-gradient(180deg, var(--accent), #b08a3a);
+    color:#1d1606;
+    box-shadow:0 10px 24px -8px rgba(176,138,58,.55);
+  }
+  .btn-accent:hover{transform:translateY(-1px)}
+  .narration{
+    font-family:var(--serif);
+    font-size:clamp(17px, 2.6vw, 20px);
+    color:var(--ink-soft);
+    text-align:center;
+    white-space:pre-line;
+    line-height:1.85;
+    max-width:50ch;margin:0 auto;
+  }
+  .portrait{
+    background:linear-gradient(180deg, #fff, #faf5ea);
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    padding:22px 24px;
+    margin:18px auto 4px;
+    max-width:520px;
+    text-align:center;
+    color:var(--ink);
+    font-family:var(--serif);
+    font-size:17px;line-height:1.85;
+  }
+  .portrait .what{color:var(--bg-3);font-weight:700}
+  .portrait .traits{color:var(--ink-soft);margin-top:8px;display:block;font-size:15px}
+  .progress{
+    display:flex;justify-content:center;gap:6px;margin:18px auto 0;
+  }
+  .progress span{
+    width:24px;height:3px;border-radius:2px;
+    background:rgba(58,86,106,.18);
+    transition:all .3s;
+  }
+  .progress span.done{background:var(--accent)}
+  .progress span.active{background:var(--bg-3);box-shadow:0 0 12px rgba(42,141,184,.4)}
+  .seal{
+    width:120px;height:120px;margin:8px auto 22px;
+    border-radius:50%;
+    background:
+      radial-gradient(circle at 35% 35%, #fff 0%, var(--accent-soft) 30%, var(--accent) 65%, #8a6a2a 100%);
+    box-shadow:0 0 60px rgba(217,184,112,.45), inset 0 0 30px rgba(255,255,255,.5);
+    animation:gentlePulse 4s ease-in-out infinite;
+  }
+  @keyframes gentlePulse{
+    0%,100%{transform:scale(1)}
+    50%{transform:scale(1.04)}
+  }
+  .cta-cluster{
+    display:flex;flex-direction:column;gap:14px;align-items:center;
+    margin-top:26px;
+  }
+  .footer-note{
+    text-align:center;color:var(--ink-faint);
+    font-size:12px;margin-top:26px;line-height:1.7;
+  }
+  .field, .actions { direction: rtl; }
+  @media (max-width: 540px){
+    .brandbar{font-size:12px}
+    .spec-dot::after{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" aria-hidden="true"></div>
+
+<header class="brandbar">
+  <div class="brand">
+    <div class="brand-mark" aria-hidden="true"></div>
+    <div class="brand-name">الهولنس وورك</div>
+  </div>
+  <div class="stepdot" id="stepdot">١ / ٧</div>
+</header>
+
+<main class="stage" id="stage"></main>
+<script src="config.js"></script>
+
+
+<script>
+const Stage = document.getElementById('stage');
+const StepDot = document.getElementById('stepdot');
+
+(function makeStars(){
+  const c = document.querySelector('.stars');
+  const n = 38;
+  for(let i=0;i<n;i++){
+    const s = document.createElement('span');
+    const size = Math.random()*2 + 1;
+    s.style.width = s.style.height = size + 'px';
+    s.style.top = Math.random()*100 + '%';
+    s.style.left = Math.random()*100 + '%';
+    s.style.animationDelay = (Math.random()*6) + 's';
+    s.style.animationDuration = (4 + Math.random()*5) + 's';
+    c.appendChild(s);
+  }
+})();
+
+function ar(n){ return String(n).replace(/\d/g, d => "٠١٢٣٤٥٦٧٨٩"[d]); }
+
+const S = {
+  primary: { name:"", location:"" },
+  sensation: {},
+  observers: [],
+  obsIdx: 0,
+  step: 1,
+  totalSteps: 7,
+};
+
+function setStep(i, total){
+  S.step = i; S.totalSteps = total || S.totalSteps;
+  StepDot.textContent = ar(i) + " / " + ar(S.totalSteps);
+}
+
+function render(html){
+  Stage.innerHTML = "";
+  const wrap = document.createElement('div');
+  wrap.className = 'card';
+  wrap.innerHTML = html;
+  Stage.appendChild(wrap);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function escapeHtml(s){
+  return String(s||"").replace(/[&<>"']/g, c => (
+    {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]
+  ));
+}
+
+function screenWelcome(){
+  setStep(1, 7);
+  render(`
+    <div class="breath" aria-hidden="true"></div>
+    <div class="eyebrow">تقنية الهولنس وورك</div>
+    <h1 class="title">مَسارٌ هادئٌ نحو الداخل</h1>
+    <p class="lede">
+      تجربةٌ تأمّليةٌ قصيرةٌ من تقنية الهولنس وورك — دون تسجيل،
+      دون إعدادات. اختر شعوراً تَودّ استكشافه، ودَع المسار يَأخذك.
+    </p>
+    <div class="ornament">۞</div>
+    <p class="lede" style="font-size:14px;color:var(--ink-faint)">
+      المدّة المتوقَّعة: ٥–١٠ دقائق &nbsp;·&nbsp; مكانٌ هادئ &nbsp;·&nbsp; حضورٌ صادق
+    </p>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="screenPrimary()">ابدأ المسار</button>
+    </div>
+    <div class="footer-note" style="margin-top:30px">
+      هذه ليست نصيحةً طبيّة أو نفسيّة. إن كنتَ تَمرّ بضائقةٍ شديدة،<br>
+      رجاءً تواصَل مع مختصٍّ مؤهَّل.
+    </div>
+  `);
+}
+
+function screenPrimary(){
+  setStep(2, 7);
+  render(`
+    <div class="eyebrow">المرحلة الأولى</div>
+    <p class="prompt">ما الشعور الذي يَحضر إليك الآن؟</p>
+    <p class="hint">لا تَحكم عليه ولا تُفسِّره — فقط سَمِّه باسمه الأقرب.</p>
+
+    <div class="field">
+      <input type="text" id="primaryName" placeholder="مثال: قلقٌ في صدري، ثِقَلٌ غامض، حنين…" />
+    </div>
+
+    <p class="prompt" style="margin-top:30px">وأين تَجدهُ في جسدك أو وعيك؟</p>
+    <p class="hint">قد يكون له موضعٌ واضح، أو إحساسٌ منتشر. صِفه كما يَبدو لك.</p>
+
+    <div class="field">
+      <input type="text" id="primaryLoc" placeholder="مثال: في وسط الصدر، خلف الجبهة، حول الكتفين…" />
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-ghost" onclick="screenWelcome()">رجوع</button>
+      <button class="btn btn-primary" id="primaryNext" disabled onclick="goSensation()">متابعة</button>
+    </div>
+  `);
+
+  const name = document.getElementById('primaryName');
+  const loc  = document.getElementById('primaryLoc');
+  const btn  = document.getElementById('primaryNext');
+  const check = () => btn.disabled = !(name.value.trim() && loc.value.trim());
+  name.addEventListener('input', check);
+  loc.addEventListener('input', check);
+  setTimeout(()=>name.focus(), 250);
+}
+
+function goSensation(){
+  S.primary.name = document.getElementById('primaryName').value.trim();
+  S.primary.location = document.getElementById('primaryLoc').value.trim();
+  S.sensation = {};
+  screenSensation(0);
+}
+
+const SENSATION_QUESTIONS = [
+  {
+    id:"state",
+    section:"حالته الجوهرية",
+    text:"كيف يَحضر إليك هذا الإحساس الآن؟ كأنّه…",
+    hint:"أنصت إليه قبل أن تختار — أيُّ الحالات تُشبهه أكثر؟",
+    type:"choice",
+    options:["صلب","سائل","غازي","ضبابي","ضوئيّ","فارغ"]
+  },
+  {
+    id:"thermal",
+    section:"طبيعته الحرارية",
+    text:"كيف هي حرارته؟",
+    hint:"اقترب من الإحساس بانتباهٍ هادئ، ثم اختَر الموضع الأقرب.",
+    type:"spectrum",
+    options:["حارق","دافئ","فاتر","محايد","بارد قليلاً","بارد","متجمّد"],
+    labels:["حارق","متجمّد"]
+  },
+  {
+    id:"weight",
+    section:"ثِقَله",
+    text:"ما إحساس ثِقَله؟",
+    hint:"شدُّ الإحساس نحو الأسفل، بصرف النظر عن امتلائه.",
+    type:"spectrum",
+    options:["بلا وزن","خفيفٌ جداً","خفيف","متوسط","ثقيل","ثقيلٌ جداً","ضاغطٌ بشدّة"],
+    labels:["بلا وزن","ثقيلٌ جداً"]
+  },
+  {
+    id:"motion",
+    section:"حركته",
+    text:"هل هو ثابتٌ أم فيه حركة؟",
+    hint:"حتى الإحساس الذي يَبدو ساكناً قد يَحمل نبضةً خفيّة — لاحظها قبل أن تختار.",
+    type:"choice",
+    options:["ثابتٌ تماماً","فيه حركةٌ خفيّة","متحرّكٌ بوضوح","يَنبض ويَهتزّ"]
+  },
+  {
+    id:"locus",
+    section:"موقعه",
+    text:"أين يَقع في فضاء جسدك أو وعيك؟",
+    hint:"قد لا يكون له موضعٌ تشريحيّ — يكفي أن تُشير إلى ما تَجده في إحساسك.",
+    type:"choice",
+    options:["داخل الجسد","خارج الجسد","في الداخل والخارج معاً"]
+  }
+];
+
+function screenSensation(idx){
+  setStep(3, 7);
+  const q = SENSATION_QUESTIONS[idx];
+  const total = SENSATION_QUESTIONS.length;
+
+  let body = "";
+  if(q.type === "choice"){
+    body = `
+      <div class="choices" id="choices">
+        ${q.options.map(o => `<button class="choice" data-val="${o}">${o}</button>`).join("")}
+      </div>
+    `;
+  } else if(q.type === "spectrum"){
+    body = `
+      <div class="spectrum" id="choices">
+        ${q.options.map((o) => `<button class="spec-dot" data-val="${o}" data-label="${o}"></button>`).join("")}
+      </div>
+      <div class="spec-labels">
+        <span>${q.labels[0]}</span><span>${q.labels[1]}</span>
+      </div>
+    `;
+  }
+
+  render(`
+    <div class="eyebrow">${q.section} &nbsp;·&nbsp; ${ar(idx+1)} من ${ar(total)}</div>
+    <p class="prompt">${q.text}</p>
+    <p class="hint">${q.hint}</p>
+    ${body}
+    <div class="progress" style="margin-top:36px">
+      ${SENSATION_QUESTIONS.map((_,i) =>
+        `<span class="${i < idx ? 'done' : (i === idx ? 'active' : '')}"></span>`
+      ).join("")}
+    </div>
+    <div class="actions">
+      <button class="btn btn-ghost" onclick="${idx===0 ? 'screenPrimary()' : 'screenSensation('+(idx-1)+')'}">رجوع</button>
+    </div>
+  `);
+
+  document.querySelectorAll('#choices > *').forEach(el => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('#choices > *').forEach(x => x.classList.remove('selected'));
+      el.classList.add('selected');
+      S.sensation[q.id] = el.dataset.val;
+      setTimeout(() => {
+        if(idx+1 < total) screenSensation(idx+1);
+        else screenPortrait();
+      }, 420);
+    });
+  });
+}
+
+function screenPortrait(){
+  setStep(4, 7);
+  const s = S.sensation;
+  const traits = [
+    `حالته ${s.state}`,
+    `حرارته ${s.thermal}`,
+    `وزنه ${s.weight}`,
+    s.motion,
+    `موقعه ${s.locus}`
+  ].join(" · ");
+
+  render(`
+    <div class="eyebrow">بورتريه حسّيّ</div>
+    <p class="lede" style="margin-bottom:18px">
+      هذا ما رَسمتَه عن نوعيّة إحساسك الآن:
+    </p>
+    <div class="portrait">
+      <span class="what">${escapeHtml(S.primary.name)}</span> — في ${escapeHtml(S.primary.location)}
+      <span class="traits">${traits}</span>
+    </div>
+    <div class="ornament">۞</div>
+    <p class="narration">— انتهى استكشاف الشعور الأساسي —
+
+خذ لحظةً هادئة.
+
+الآن نَتحوّل إلى شيءٍ دقيق:
+هناك جزءٌ منكَ يُلاحظ هذا الشعور ويُراقبه من بعيد —
+ليس الشعور نفسه، بل ذلك الذي يَعرف بوجوده.
+
+راقب في مساحة وعيك الداخليّ.</p>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="screenObserver(0)">تابع إلى المراقب</button>
+    </div>
+  `);
+}
+
+function screenObserver(idx){
+  setStep(5, 7);
+  S.obsIdx = idx;
+  const ord = ["الأول","الثاني","الثالث"][idx] || "";
+
+  render(`
+    <div class="eyebrow">المرحلة الثانية &nbsp;·&nbsp; المراقب ${ord}</div>
+    <p class="prompt">هل تَجد جزءاً منكَ يُراقب ${escapeHtml(S.primary.name)}؟</p>
+    <p class="hint">قد يكون إحساساً جسديّاً، أو فكرةً ذهنيّة، أو شعوراً عاطفيّاً يُلاحظ من بعيد.</p>
+
+    <div class="field">
+      <input type="text" id="obsName" placeholder="صف هذا المراقب باختصار…" />
+    </div>
+
+    <p class="prompt" style="margin-top:26px">أين تَجده؟</p>
+    <p class="hint">في مساحة الوعي الداخلي — قد يكون أعلى الرأس، خلف العين، فوق الكتف…</p>
+
+    <div class="field">
+      <input type="text" id="obsLoc" placeholder="مثال: فوق الرأس، خلف الصدر، إلى اليسار…" />
+    </div>
+
+    <p class="prompt" style="margin-top:26px">ما طبيعته الأقرب؟</p>
+    <div class="choices" id="obsType">
+      <button class="choice" data-val="جسديّ">جسديّ</button>
+      <button class="choice" data-val="ذهنيّ">ذهنيّ</button>
+      <button class="choice" data-val="عاطفيّ">عاطفيّ</button>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-ghost" onclick="screenPortrait()">رجوع</button>
+      <button class="btn btn-primary" id="obsNext" disabled onclick="goInvite()">متابعة</button>
+    </div>
+  `);
+
+  let typeChosen = "";
+  const name = document.getElementById('obsName');
+  const loc  = document.getElementById('obsLoc');
+  const btn  = document.getElementById('obsNext');
+  const check = () => btn.disabled = !(name.value.trim() && loc.value.trim() && typeChosen);
+
+  document.querySelectorAll('#obsType .choice').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('#obsType .choice').forEach(x => x.classList.remove('selected'));
+      b.classList.add('selected');
+      typeChosen = b.dataset.val;
+      check();
+    });
+  });
+
+  name.addEventListener('input', check);
+  loc.addEventListener('input', check);
+
+  if(S.observers[idx]){
+    name.value = S.observers[idx].name;
+    loc.value = S.observers[idx].location;
+    typeChosen = S.observers[idx].type;
+    document.querySelectorAll('#obsType .choice').forEach(x => {
+      if(x.dataset.val === typeChosen) x.classList.add('selected');
+    });
+    check();
+  }
+  setTimeout(()=>name.focus(), 250);
+
+  window.goInvite = function(){
+    S.observers[idx] = {
+      name: name.value.trim(),
+      location: loc.value.trim(),
+      type: typeChosen,
+      merged: false
+    };
+    screenInvite(idx);
+  };
+}
+
+function screenInvite(idx){
+  setStep(6, 7);
+  const obs = S.observers[idx];
+
+  render(`
+    <div class="breath" aria-hidden="true" style="width:64px;height:64px;animation-duration:6s"></div>
+    <div class="eyebrow">لحظةُ الدعوة</div>
+    <p class="narration">انتبه إلى المراقب في "${escapeHtml(obs.location)}".
+
+استَدِر إليه بلطفٍ في وعيك،
+وادْعُه — دون إجبار — إلى الاندماج معك،
+لا لتُغيِّره، بل ليَكون جزءاً منكَ من جديد.
+
+تَذكَّر أنك لستَ المتحكِّم في الاندماج —
+دَع الحكمة الداخلية تَفعل عملها على إيقاعها.</p>
+
+    <div class="ornament">۞</div>
+    <p class="prompt">هل قَبِل المراقبُ دعوةَ الاندماج؟</p>
+
+    <div class="actions">
+      <button class="btn btn-accent" onclick="onMerge(${idx}, true)">نعم — اكتمل الاندماج</button>
+      <button class="btn btn-ghost" onclick="onMerge(${idx}, false)">لم يَكتمل بعد</button>
+    </div>
+  `);
+}
+
+function onMerge(idx, merged){
+  S.observers[idx].merged = merged;
+  if(idx + 1 < 3){
+    screenAnother(idx);
+  } else {
+    screenComplete();
+  }
+}
+
+function screenAnother(idx){
+  setStep(7, 7);
+  const ord = ["آخر","ثالث"][idx] || "آخر";
+
+  render(`
+    <div class="eyebrow">سؤالٌ هادئ</div>
+    <p class="prompt">هل تَجد مراقباً ${ord} لهذا الشعور؟</p>
+    <p class="hint">خذ لحظةً، وانظر في مساحة وعيك — أحياناً يَظهر مراقبٌ آخر بعد أن يَكتمل الأول. وأحياناً تَكفي خطوةٌ واحدة.</p>
+
+    <div class="actions">
+      <button class="btn btn-primary" onclick="screenObserver(${idx+1})">نعم — أرى مراقباً آخر</button>
+      <button class="btn btn-ghost" onclick="screenComplete()">يَكفي — أنهِ التأمّل</button>
+    </div>
+  `);
+}
+
+function screenComplete(){
+  setStep(7, 7);
+  const mergedCount = S.observers.filter(o => o.merged).length;
+  const total = S.observers.length;
+
+  let reflection = "";
+  if(mergedCount === total && total > 0){
+    reflection = `كلُّ المراقبين الذين رأيتَهم قَبِلوا الدعوة (${ar(mergedCount)} من ${ar(total)}).
+ربما تَلمَح اتّساعاً ناعماً، أو هدوءاً لم يَكن قبل قليل.`;
+  } else if(mergedCount === 0){
+    reflection = `لم يَكتمل اندماجٌ كاملٌ هذه المرّة — وهذا تمامٌ بحدّ ذاته.
+كثيراً ما يَحتاج المراقب إلى مساحةٍ أوسع، أو إلى جلسةٍ مع مُيسِّر،
+ليَأذن لنفسه بالاندماج.`;
+  } else {
+    reflection = `اندَمج معكَ ${ar(mergedCount)} من أصل ${ar(total)} مراقبين.
+لاحظ ما تَغيَّر — في الإحساس، في النَّفَس، في المساحة الداخليّة.`;
+  }
+
+  render(`
+    <div class="seal" aria-hidden="true"></div>
+    <div class="eyebrow">نهايةُ المسار</div>
+    <h1 class="title">شكراً لحضورِكَ.</h1>
+    <p class="narration">${reflection}
+
+خذ لحظةً قبل أن تَعود —
+لاحظ نَفَسَكَ، ثم افتح عينيكَ على المكان الذي أنتَ فيه.</p>
+
+    <div class="ornament">۞</div>
+
+    <p class="lede" style="margin-top:6px">
+      هذه كانت لمحةً مبسّطةً من تقنية الهولنس وورك.
+      المسارُ الكامل أعمَق وأرحَب — وفيه أدواتٌ لاكتشاف السلطة، والاحتياجات،
+      والهوية، والتحرّر.
+    </p>
+
+    <div class="cta-cluster">
+      <a class="btn btn-accent" id="ctaTelegram" href="#" target="_blank" rel="noopener">
+        انضمّ إلى الدورة التعريفية على تلجرام ‹٣ أيام›
+      </a>
+      <button class="btn btn-ghost" onclick="restart()">جرّب مسارَ تأمّلٍ آخر</button>
+    </div>
+
+    <div class="footer-note">
+      هذه التجربة محليّة بالكامل — لم يُحفَظ شيءٌ ممّا كتبتَه.<br>
+      ما رأيتَه هنا كان بينَك وبين نفسك فقط.
+    </div>
+  `);
+
+  const cta = document.getElementById('ctaTelegram');
+  const url = window.HOLNESS_TELEGRAM_URL || "https://t.me/+holnesswork";
+  cta.setAttribute('href', url);
+}
+
+function restart(){
+  S.primary = { name:"", location:"" };
+  S.sensation = {};
+  S.observers = [];
+  S.obsIdx = 0;
+  screenWelcome();
+}
+
+screenWelcome();
+</script>
+
+</body>
+</html>

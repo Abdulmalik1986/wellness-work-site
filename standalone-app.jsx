@@ -439,181 +439,583 @@ function Lightbox({ src, caption, onClose }) {
   );
 }
 
-/* ---------- Experience (interactive breath) ---------- */
+/* ---------- Experience (guided inner journey) ---------- */
+const EXPERIENCE_TELEGRAM_URL =
+  (typeof window !== "undefined" && window.HOLNESS_TELEGRAM_URL) ||
+  "https://t.me/+holnesswork";
+
+const SENSATION_QUESTIONS = [
+  {
+    id: "state",
+    section: "حالته الجوهرية",
+    text: "كيف يَحضر إليك هذا الإحساس الآن؟ كأنّه…",
+    hint: "أنصت إليه قبل أن تختار — أيُّ الحالات تُشبهه أكثر؟",
+    type: "choice",
+    options: ["صلب", "سائل", "غازي", "ضبابي", "ضوئيّ", "فارغ"],
+  },
+  {
+    id: "thermal",
+    section: "طبيعته الحرارية",
+    text: "كيف هي حرارته؟",
+    hint: "اقترب من الإحساس بانتباهٍ هادئ، ثم اختَر الموضع الأقرب.",
+    type: "spectrum",
+    options: ["حارق", "دافئ", "فاتر", "محايد", "بارد قليلاً", "بارد", "متجمّد"],
+    labels: ["حارق", "متجمّد"],
+  },
+  {
+    id: "weight",
+    section: "ثِقَله",
+    text: "ما إحساس ثِقَله؟",
+    hint: "شدُّ الإحساس نحو الأسفل، بصرف النظر عن امتلائه.",
+    type: "spectrum",
+    options: [
+      "بلا وزن",
+      "خفيفٌ جداً",
+      "خفيف",
+      "متوسط",
+      "ثقيل",
+      "ثقيلٌ جداً",
+      "ضاغطٌ بشدّة",
+    ],
+    labels: ["بلا وزن", "ثقيلٌ جداً"],
+  },
+  {
+    id: "motion",
+    section: "حركته",
+    text: "هل هو ثابتٌ أم فيه حركة؟",
+    hint:
+      "حتى الإحساس الذي يَبدو ساكناً قد يَحمل نبضةً خفيّة — لاحظها قبل أن تختار.",
+    type: "choice",
+    options: ["ثابتٌ تماماً", "فيه حركةٌ خفيّة", "متحرّكٌ بوضوح", "يَنبض ويَهتزّ"],
+  },
+  {
+    id: "locus",
+    section: "موقعه",
+    text: "أين يَقع في فضاء جسدك أو وعيك؟",
+    hint: "قد لا يكون له موضعٌ تشريحيّ — يكفي أن تُشير إلى ما تَجده في إحساسك.",
+    type: "choice",
+    options: ["داخل الجسد", "خارج الجسد", "في الداخل والخارج معاً"],
+  },
+];
+
+const ORD_OBS = ["الأول", "الثاني", "الثالث"];
+
+function arDigits(n) {
+  return String(n).replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[d]);
+}
+
 function Experience() {
-  const phases = [
-    {
-      key: "intro",
-      label: "اِجلسْ بهدوء. خُذ نَفَساً عميقاً ودَعْه يَنساب ببطء.",
-      duration: 8,
-    },
-    {
-      key: "feel",
-      label: "اِستحضرْ موقفاً بسيطاً يُشغلك — ليس الأشدّ، بل المتوسِّط.",
-      duration: 10,
-    },
-    {
-      key: "locate",
-      label: "أين تَحسُّ بأثره في الجسد؟ في الصدر؟ البطن؟ الحلق؟ لاحِظْ فقط.",
-      duration: 12,
-    },
-    {
-      key: "quality",
-      label: "ما نوعيّةُ هذا الإحساس؟ ثقيل أم خفيف؟ كثيف أم هوائيّ؟",
-      duration: 10,
-    },
-    {
-      key: "awareness",
-      label: "والآن، استشعِر الوعيَ الواسع الذي يَحتوي الإحساسَ وما حوله.",
-      duration: 12,
-    },
-    {
-      key: "invite",
-      label: "ادعُ الإحساسَ بلطفٍ — لا بإجبار — للاسترخاءِ في هذا الفضاء.",
-      duration: 12,
-    },
-    {
-      key: "rest",
-      label: "اسمحْ بما يَحدث. لستَ مَنْ يَفعل — أنت الفضاءُ الذي يَسمح.",
-      duration: 10,
-    },
-    {
-      key: "complete",
-      label: "اِفتحْ عينيك بلطف. هذا ذوقٌ صغير — والطريقةُ أعمقُ بكثير.",
-      duration: 0,
-    },
-  ];
+  const [stage, setStage] = useState({ kind: "welcome" });
+  const [primary, setPrimary] = useState({ name: "", location: "" });
+  const [sensation, setSensation] = useState({});
+  const [observers, setObservers] = useState([]);
 
-  const [running, setRunning] = useState(false);
-  const [phaseIdx, setPhaseIdx] = useState(0);
-  const [elapsed, setElapsed] = useState(0);
-  const totalDuration = phases.reduce((s, p) => s + p.duration, 0);
-  const timersRef = useRef([]);
-  const tickRef = useRef(null);
+  const [pName, setPName] = useState("");
+  const [pLoc, setPLoc] = useState("");
+  const [oName, setOName] = useState("");
+  const [oLoc, setOLoc] = useState("");
+  const [oType, setOType] = useState("");
 
-  function clearAll() {
-    timersRef.current.forEach(clearTimeout);
-    timersRef.current = [];
-    if (tickRef.current) clearInterval(tickRef.current);
-    tickRef.current = null;
+  const [lastSensChoice, setLastSensChoice] = useState({ qid: "", val: "" });
+  const advanceTimerRef = useRef(null);
+  useEffect(() => () => clearTimeout(advanceTimerRef.current), []);
+
+  const totalSteps = 7;
+  const stepIndex = (() => {
+    switch (stage.kind) {
+      case "welcome":
+        return 1;
+      case "primary":
+        return 2;
+      case "sensation":
+        return 3;
+      case "portrait":
+        return 4;
+      case "observer":
+        return 5;
+      case "invite":
+        return 6;
+      case "another":
+      case "complete":
+      default:
+        return 7;
+    }
+  })();
+
+  function gotoPrimary() {
+    setPName(primary.name);
+    setPLoc(primary.location);
+    setStage({ kind: "primary" });
   }
-
-  function start() {
-    clearAll();
-    setRunning(true);
-    setPhaseIdx(0);
-    setElapsed(0);
-
-    let acc = 0;
-    phases.forEach((p, i) => {
-      acc += p.duration;
-      if (i < phases.length - 1) {
-        const t = setTimeout(() => setPhaseIdx(i + 1), acc * 1000);
-        timersRef.current.push(t);
+  function submitPrimary() {
+    setPrimary({ name: pName.trim(), location: pLoc.trim() });
+    setSensation({});
+    setStage({ kind: "sensation", idx: 0 });
+  }
+  function chooseSens(idx, qid, val) {
+    setSensation((prev) => ({ ...prev, [qid]: val }));
+    setLastSensChoice({ qid, val });
+    clearTimeout(advanceTimerRef.current);
+    advanceTimerRef.current = setTimeout(() => {
+      setLastSensChoice({ qid: "", val: "" });
+      if (idx + 1 < SENSATION_QUESTIONS.length) {
+        setStage({ kind: "sensation", idx: idx + 1 });
+      } else {
+        setStage({ kind: "portrait" });
       }
-    });
-    const finalT = setTimeout(() => {
-      setRunning(false);
-    }, totalDuration * 1000);
-    timersRef.current.push(finalT);
-
-    const startTs = Date.now();
-    tickRef.current = setInterval(() => {
-      setElapsed(Math.min(totalDuration, (Date.now() - startTs) / 1000));
-    }, 250);
+    }, 420);
+  }
+  function gotoObserver(idx) {
+    const existing = observers[idx] || { name: "", location: "", type: "" };
+    setOName(existing.name);
+    setOLoc(existing.location);
+    setOType(existing.type);
+    setStage({ kind: "observer", idx });
+  }
+  function submitObserver(idx) {
+    const next = observers.slice();
+    next[idx] = {
+      name: oName.trim(),
+      location: oLoc.trim(),
+      type: oType,
+      merged: false,
+    };
+    setObservers(next);
+    setStage({ kind: "invite", idx });
+  }
+  function onMerge(idx, merged) {
+    const next = observers.slice();
+    next[idx] = { ...next[idx], merged };
+    setObservers(next);
+    if (idx + 1 < 3) {
+      setStage({ kind: "another", idx });
+    } else {
+      setStage({ kind: "complete" });
+    }
+  }
+  function restart() {
+    setPrimary({ name: "", location: "" });
+    setSensation({});
+    setObservers([]);
+    setPName("");
+    setPLoc("");
+    setOName("");
+    setOLoc("");
+    setOType("");
+    setStage({ kind: "welcome" });
   }
 
-  function reset() {
-    clearAll();
-    setRunning(false);
-    setPhaseIdx(0);
-    setElapsed(0);
+  let card;
+  if (stage.kind === "welcome") {
+    card = (
+      <div className="exp-screen exp-welcome">
+        <div className="exp-orb" aria-hidden="true"></div>
+        <p className="exp-prompt">ابدأ حين تكون مستعدّاً.</p>
+        <p className="exp-hint">
+          خُذ نَفساً عميقاً. سأَسألك أسئلةً قصيرة — أَنصِت إلى ما يَحضر، لا
+          إلى ما تَعرفه.
+        </p>
+        <div className="exp-meta-line" aria-hidden="true">
+          <span>٥–١٠ دقائق</span>
+          <i></i>
+          <span>مكانٌ هادئ</span>
+          <i></i>
+          <span>حضورٌ صادق</span>
+        </div>
+        <div className="exp-actions">
+          <button className="exp-btn exp-btn-primary" onClick={gotoPrimary}>
+            ابدأ المسار
+          </button>
+        </div>
+        <p className="exp-fine">
+          هذه ليست نصيحةً طبيّة أو نفسيّة. إن كنتَ تَمرّ بضائقةٍ شديدة، تواصَل
+          مع مختصٍّ مؤهَّل.
+        </p>
+      </div>
+    );
+  } else if (stage.kind === "primary") {
+    const canNext = pName.trim() && pLoc.trim();
+    card = (
+      <div className="exp-screen">
+        <div className="exp-eyebrow">المرحلة الأولى</div>
+        <p className="exp-prompt">ما الشعور الذي يَحضر إليك الآن؟</p>
+        <p className="exp-hint">
+          لا تَحكم عليه ولا تُفسِّره — فقط سَمِّه باسمه الأقرب.
+        </p>
+        <div className="exp-field">
+          <input
+            type="text"
+            value={pName}
+            onChange={(e) => setPName(e.target.value)}
+            placeholder="مثال: قلقٌ في صدري، ثِقَلٌ غامض، حنين…"
+            autoFocus
+          />
+        </div>
+
+        <p className="exp-prompt exp-prompt-sm">
+          وأين تَجدهُ في جسدك أو وعيك؟
+        </p>
+        <p className="exp-hint">
+          قد يكون له موضعٌ واضح، أو إحساسٌ منتشر. صِفه كما يَبدو لك.
+        </p>
+        <div className="exp-field">
+          <input
+            type="text"
+            value={pLoc}
+            onChange={(e) => setPLoc(e.target.value)}
+            placeholder="مثال: في وسط الصدر، خلف الجبهة، حول الكتفين…"
+          />
+        </div>
+
+        <div className="exp-actions">
+          <button
+            className="exp-btn exp-btn-ghost"
+            onClick={() => setStage({ kind: "welcome" })}
+          >
+            رجوع
+          </button>
+          <button
+            className="exp-btn exp-btn-primary"
+            disabled={!canNext}
+            onClick={submitPrimary}
+          >
+            متابعة
+          </button>
+        </div>
+      </div>
+    );
+  } else if (stage.kind === "sensation") {
+    const idx = stage.idx;
+    const q = SENSATION_QUESTIONS[idx];
+    const total = SENSATION_QUESTIONS.length;
+    const back = () =>
+      idx === 0
+        ? gotoPrimary()
+        : setStage({ kind: "sensation", idx: idx - 1 });
+
+    const isSelected = (val) =>
+      sensation[q.id] === val ||
+      (lastSensChoice.qid === q.id && lastSensChoice.val === val);
+
+    card = (
+      <div className="exp-screen">
+        <div className="exp-eyebrow">
+          {q.section} &nbsp;·&nbsp; {arDigits(idx + 1)} من {arDigits(total)}
+        </div>
+        <p className="exp-prompt">{q.text}</p>
+        <p className="exp-hint">{q.hint}</p>
+
+        {q.type === "choice" && (
+          <div className="exp-choices">
+            {q.options.map((o) => (
+              <button
+                key={o}
+                className={
+                  "exp-choice" + (isSelected(o) ? " is-selected" : "")
+                }
+                onClick={() => chooseSens(idx, q.id, o)}
+              >
+                {o}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {q.type === "spectrum" && (
+          <>
+            <div className="exp-spectrum">
+              {q.options.map((o) => (
+                <button
+                  key={o}
+                  className={
+                    "exp-spec-dot" + (isSelected(o) ? " is-selected" : "")
+                  }
+                  data-label={o}
+                  aria-label={o}
+                  onClick={() => chooseSens(idx, q.id, o)}
+                ></button>
+              ))}
+            </div>
+            <div className="exp-spec-labels">
+              <span>{q.labels[0]}</span>
+              <span>{q.labels[1]}</span>
+            </div>
+          </>
+        )}
+
+        <div className="exp-progress-dots">
+          {SENSATION_QUESTIONS.map((_, i) => (
+            <span
+              key={i}
+              className={
+                i < idx ? "is-done" : i === idx ? "is-active" : ""
+              }
+            ></span>
+          ))}
+        </div>
+
+        <div className="exp-actions">
+          <button className="exp-btn exp-btn-ghost" onClick={back}>
+            رجوع
+          </button>
+        </div>
+      </div>
+    );
+  } else if (stage.kind === "portrait") {
+    const s = sensation;
+    const traits = [
+      `حالته ${s.state}`,
+      `حرارته ${s.thermal}`,
+      `وزنه ${s.weight}`,
+      s.motion,
+      `موقعه ${s.locus}`,
+    ]
+      .filter(Boolean)
+      .join(" · ");
+
+    card = (
+      <div className="exp-screen">
+        <div className="exp-eyebrow">بورتريه حسّيّ</div>
+        <p className="exp-lede">هذا ما رَسمتَه عن نوعيّة إحساسك الآن:</p>
+        <div className="exp-portrait">
+          <span className="exp-portrait-what">{primary.name}</span>
+          <span className="exp-portrait-where"> — في {primary.location}</span>
+          <span className="exp-portrait-traits">{traits}</span>
+        </div>
+        <div className="exp-ornament" aria-hidden="true">۞</div>
+        <p className="exp-narration">{`— انتهى استكشاف الشعور الأساسي —
+
+خذ لحظةً هادئة.
+
+الآن نَتحوّل إلى شيءٍ دقيق:
+هناك جزءٌ منكَ يُلاحظ هذا الشعور ويُراقبه من بعيد —
+ليس الشعور نفسه، بل ذلك الذي يَعرف بوجوده.
+
+راقب في مساحة وعيك الداخليّ.`}</p>
+        <div className="exp-actions">
+          <button
+            className="exp-btn exp-btn-primary"
+            onClick={() => gotoObserver(0)}
+          >
+            تابع إلى المراقب
+          </button>
+        </div>
+      </div>
+    );
+  } else if (stage.kind === "observer") {
+    const idx = stage.idx;
+    const canNext = oName.trim() && oLoc.trim() && oType;
+    card = (
+      <div className="exp-screen">
+        <div className="exp-eyebrow">
+          المرحلة الثانية &nbsp;·&nbsp; المراقب {ORD_OBS[idx]}
+        </div>
+        <p className="exp-prompt">هل تَجد جزءاً منكَ يُراقب «{primary.name}»؟</p>
+        <p className="exp-hint">
+          قد يكون إحساساً جسديّاً، أو فكرةً ذهنيّة، أو شعوراً عاطفيّاً
+          يُلاحظ من بعيد.
+        </p>
+        <div className="exp-field">
+          <input
+            type="text"
+            value={oName}
+            onChange={(e) => setOName(e.target.value)}
+            placeholder="صف هذا المراقب باختصار…"
+            autoFocus
+          />
+        </div>
+
+        <p className="exp-prompt exp-prompt-sm">أين تَجده؟</p>
+        <p className="exp-hint">
+          في مساحة الوعي الداخلي — قد يكون أعلى الرأس، خلف العين، فوق
+          الكتف…
+        </p>
+        <div className="exp-field">
+          <input
+            type="text"
+            value={oLoc}
+            onChange={(e) => setOLoc(e.target.value)}
+            placeholder="مثال: فوق الرأس، خلف الصدر، إلى اليسار…"
+          />
+        </div>
+
+        <p className="exp-prompt exp-prompt-sm">ما طبيعته الأقرب؟</p>
+        <div className="exp-choices">
+          {["جسديّ", "ذهنيّ", "عاطفيّ"].map((t) => (
+            <button
+              key={t}
+              className={"exp-choice" + (oType === t ? " is-selected" : "")}
+              onClick={() => setOType(t)}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+
+        <div className="exp-actions">
+          <button
+            className="exp-btn exp-btn-ghost"
+            onClick={() => setStage({ kind: "portrait" })}
+          >
+            رجوع
+          </button>
+          <button
+            className="exp-btn exp-btn-primary"
+            disabled={!canNext}
+            onClick={() => submitObserver(idx)}
+          >
+            متابعة
+          </button>
+        </div>
+      </div>
+    );
+  } else if (stage.kind === "invite") {
+    const idx = stage.idx;
+    const obs = observers[idx] || {};
+    card = (
+      <div className="exp-screen exp-invite">
+        <div className="exp-orb exp-orb-sm" aria-hidden="true"></div>
+        <div className="exp-eyebrow">لحظةُ الدعوة</div>
+        <p className="exp-narration">{`انتبه إلى المراقب في «${obs.location}».
+
+استَدِر إليه بلطفٍ في وعيك،
+وادْعُه — دون إجبار — إلى الاندماج معك،
+لا لتُغيِّره، بل ليَكون جزءاً منكَ من جديد.
+
+تَذكَّر أنك لستَ المتحكِّم في الاندماج —
+دَع الحكمة الداخلية تَفعل عملها على إيقاعها.`}</p>
+        <div className="exp-ornament" aria-hidden="true">۞</div>
+        <p className="exp-prompt">هل قَبِل المراقبُ دعوةَ الاندماج؟</p>
+        <div className="exp-actions exp-actions-stack">
+          <button
+            className="exp-btn exp-btn-accent"
+            onClick={() => onMerge(idx, true)}
+          >
+            نعم — اكتمل الاندماج
+          </button>
+          <button
+            className="exp-btn exp-btn-ghost"
+            onClick={() => onMerge(idx, false)}
+          >
+            لم يَكتمل بعد
+          </button>
+        </div>
+      </div>
+    );
+  } else if (stage.kind === "another") {
+    const idx = stage.idx;
+    card = (
+      <div className="exp-screen">
+        <div className="exp-eyebrow">سؤالٌ هادئ</div>
+        <p className="exp-prompt">هل تَجد مراقباً آخر لهذا الشعور؟</p>
+        <p className="exp-hint">
+          خذ لحظةً، وانظر في مساحة وعيك — أحياناً يَظهر مراقبٌ آخر بعد أن
+          يَكتمل الأول. وأحياناً تَكفي خطوةٌ واحدة.
+        </p>
+        <div className="exp-actions exp-actions-stack">
+          <button
+            className="exp-btn exp-btn-primary"
+            onClick={() => gotoObserver(idx + 1)}
+          >
+            نعم — أرى مراقباً آخر
+          </button>
+          <button
+            className="exp-btn exp-btn-ghost"
+            onClick={() => setStage({ kind: "complete" })}
+          >
+            يَكفي — أنهِ التأمّل
+          </button>
+        </div>
+      </div>
+    );
+  } else if (stage.kind === "complete") {
+    const mergedCount = observers.filter((o) => o.merged).length;
+    const total = observers.length;
+    let reflection;
+    if (total > 0 && mergedCount === total) {
+      reflection = `كلُّ المراقبين الذين رأيتَهم قَبِلوا الدعوة (${arDigits(
+        mergedCount
+      )} من ${arDigits(total)}).
+ربما تَلمَح اتّساعاً ناعماً، أو هدوءاً لم يَكن قبل قليل.`;
+    } else if (mergedCount === 0) {
+      reflection = `لم يَكتمل اندماجٌ كاملٌ هذه المرّة — وهذا تمامٌ بحدّ ذاته.
+كثيراً ما يَحتاج المراقب إلى مساحةٍ أوسع، أو إلى جلسةٍ مع مُيسِّر،
+ليَأذن لنفسه بالاندماج.`;
+    } else {
+      reflection = `اندَمج معكَ ${arDigits(mergedCount)} من أصل ${arDigits(
+        total
+      )} مراقبين.
+لاحظ ما تَغيَّر — في الإحساس، في النَّفَس، في المساحة الداخليّة.`;
+    }
+
+    card = (
+      <div className="exp-screen exp-complete">
+        <div className="exp-seal" aria-hidden="true"></div>
+        <div className="exp-eyebrow">نهايةُ المسار</div>
+        <h3 className="exp-title">شكراً لحضورِكَ.</h3>
+        <p className="exp-narration">{`${reflection}
+
+خذ لحظةً قبل أن تَعود —
+لاحظ نَفَسَكَ، ثم افتح عينيكَ على المكان الذي أنتَ فيه.`}</p>
+        <div className="exp-ornament" aria-hidden="true">۞</div>
+        <p className="exp-lede">
+          هذه كانت لمحةً مبسّطةً من تقنية الهولنس وورك. المسارُ الكامل
+          أعمَق وأرحَب — وفيه أدواتٌ لاكتشاف السلطة، والاحتياجات، والهوية،
+          والتحرّر.
+        </p>
+        <div className="exp-actions exp-actions-stack">
+          <a
+            className="exp-btn exp-btn-accent"
+            href={EXPERIENCE_TELEGRAM_URL}
+            target="_blank"
+            rel="noopener"
+          >
+            انضمّ إلى الدورة التعريفية على تلجرام «٣ أيام»
+          </a>
+          <button className="exp-btn exp-btn-ghost" onClick={restart}>
+            جرّب مسارَ تأمّلٍ آخر
+          </button>
+        </div>
+        <p className="exp-fine">
+          هذه التجربة محليّة بالكامل — لم يُحفَظ شيءٌ ممّا كتبتَه.
+          <br />
+          ما رأيتَه هنا كان بينَك وبين نفسك فقط.
+        </p>
+      </div>
+    );
   }
-
-  useEffect(() => () => clearAll(), []);
-
-  const currentPhase = phases[phaseIdx];
-  const progress = Math.min(100, (elapsed / totalDuration) * 100);
-
-  const [cycleShape, setCycleShape] = useState("idle");
-  useEffect(() => {
-    if (!running) {
-      setCycleShape("idle");
-      return;
-    }
-    if (currentPhase.key === "intro" || currentPhase.key === "complete") {
-      setCycleShape("idle");
-      return;
-    }
-    const startTs = Date.now();
-    setCycleShape("inhale");
-    const id = setInterval(() => {
-      const t = (Date.now() - startTs) / 1000;
-      setCycleShape(Math.floor(t / 4) % 2 === 0 ? "inhale" : "exhale");
-    }, 250);
-    return () => clearInterval(id);
-  }, [phaseIdx, running]);
-
-  const shape = running ? cycleShape : "idle";
 
   return (
     <section className="block" id="experience">
       <div className="wrap">
         <Reveal as="div" className="experience">
           <span className="eyebrow">٥ · تجربة قصيرة</span>
-          <h2>ذُقها في دقيقة ونصف.</h2>
+          <h2>مسارٌ هادئٌ نحو الداخل.</h2>
           <p className="intro">
-            ليست جلسةً كاملة — فالجلسة الحقيقيّة تَستغرق نحو عشرين دقيقة
-            مع مُيَسِّر. هذه فقط <em>ذوقٌ</em> لروح الطريقة: ست لحظاتٍ صغيرة
-            تَأخذُك خلالَ بنيتها. أَغمِض عينيك إن شئتَ، ودَعِ النصَّ يَقودك.
+            ليست جلسةً كاملة — فالجلسةُ الحقيقيّة تَستغرق نحو عشرين دقيقة مع
+            مُيَسِّر. هذه <em>ذوقٌ</em> موجَّه: شعورٌ واحد، خمس نوعيّاتٍ حسّيّة،
+            ثم زيارةٌ هادئة لـ«المراقب» الذي يَعِيه. لا تسجيل، لا حفظ —
+            بَينَكَ وبين نفسك.
           </p>
 
-          <div className="exp-stage">
-            <div className="exp-canvas">
-              <svg viewBox="-100 -100 200 200">
-                <circle className="bg-ring" cx="0" cy="0" r="95" />
-                <circle className="bg-ring" cx="0" cy="0" r="75" />
-                <circle className="bg-ring" cx="0" cy="0" r="55" />
-                <circle className={`breath-shape ${shape}`} cx="0" cy="0" r="50" />
-                <circle className={`breath-core ${shape}`} cx="0" cy="0" r="12" />
-              </svg>
-              <div className="phase-text" key={currentPhase.key}>
-                {running || phaseIdx > 0 ? currentPhase.label : "اِجلسْ بهدوء"}
+          <div className="exp-shell">
+            <header className="exp-shell-head">
+              <div className="exp-shell-brand">
+                <BrandMark />
+                <span>الهولنس وورك</span>
               </div>
-            </div>
-
-            <div className="exp-controls">
-              <div className="exp-prompt">
-                {!running && phaseIdx === 0 && (
-                  <>تجربةٌ موجَّهةٌ قصيرة — تَذوقُ فيها روحَ الطريقة في دقيقة.</>
-                )}
-                {running && <>{currentPhase.label}</>}
-                {!running && phaseIdx > 0 && (
-                  <>كيف هو الهواءُ الآن؟ خُذ لحظةً قبل أن تَعود.</>
-                )}
+              <div className="exp-shell-step">
+                {arDigits(stepIndex)} / {arDigits(totalSteps)}
               </div>
-
-              {!running && (
-                <button className="exp-button" onClick={start}>
-                  <span>{phaseIdx > 0 ? "كرِّر التجربة" : "ابدأ التجربة"}</span>
-                  <span className="arrow"></span>
-                </button>
-              )}
-              {running && (
-                <button className="exp-button" onClick={reset}>
-                  <span>إيقاف</span>
-                </button>
-              )}
-
-              <div className="exp-meta">
-                <span>نحو ٧٥ ثانية</span>
-                <span>صوتٌ داخليّ فقط</span>
-                <span>بلا حساب · بلا تسجيل</span>
-              </div>
-
-              <div className="exp-progress">
-                <div className="exp-progress-bar" style={{ width: `${progress}%` }}></div>
-              </div>
+            </header>
+            <div
+              className="exp-card"
+              key={
+                stage.kind +
+                (stage.idx !== undefined ? ":" + stage.idx : "")
+              }
+            >
+              {card}
             </div>
           </div>
         </Reveal>
