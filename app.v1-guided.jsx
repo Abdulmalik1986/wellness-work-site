@@ -16,34 +16,11 @@ function BrandMark() {
 /* ---------- Background music toggle ---------- */
 function MusicToggle() {
   const [playing, setPlaying] = useState(false);
-  const [visible, setVisible] = useState(false);
   const audioRef = useRef(null);
   // Tracks a deferred-start pending the first user gesture. Browsers block
   // programmatic play() without prior interaction; if the saved preference
   // is "on", we wait for any click/keydown and resume from there.
   const pendingStartRef = useRef(false);
-
-  // Reveal the toggle only after the user has engaged — either scrolled past
-  // the hero, or 12s of dwell time. Avoids cluttering the first impression.
-  useEffect(() => {
-    if (localStorage.getItem("bgMusic") === "on") {
-      setVisible(true);
-      return;
-    }
-    const timer = setTimeout(() => setVisible(true), 12000);
-    const onScroll = () => {
-      if (window.scrollY > 400) {
-        setVisible(true);
-        window.removeEventListener("scroll", onScroll);
-        clearTimeout(timer);
-      }
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener("scroll", onScroll);
-    };
-  }, []);
 
   useEffect(() => {
     const a = new Audio("audio/ambient.mp3");
@@ -101,12 +78,10 @@ function MusicToggle() {
   return (
     <button
       type="button"
-      className={"music-toggle" + (playing ? " is-playing" : "") + (visible ? " is-visible" : "")}
+      className={"music-toggle" + (playing ? " is-playing" : "")}
       onClick={toggle}
       aria-label={playing ? "إيقاف موسيقى الخلفية" : "تشغيل موسيقى الخلفية"}
       title={playing ? "إيقاف الموسيقى" : "تشغيل الموسيقى"}
-      aria-hidden={!visible}
-      tabIndex={visible ? 0 : -1}
     >
       <span className="mt-bars" aria-hidden="true">
         <i></i>
@@ -121,31 +96,6 @@ function MusicToggle() {
 
 /* ---------- Header ---------- */
 function Header() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const links = [
-    { href: "#what", label: "ما هي" },
-    { href: "#insights", label: "المفاتيح" },
-    { href: "#process", label: "العملية" },
-    { href: "#gallery", label: "بصائر" },
-    { href: "#experience", label: "تجربة" },
-    { href: "#trainer", label: "المدرّب" },
-    { href: "#faq", label: "أسئلة" },
-    { href: "#contact", label: "تواصل" },
-  ];
-
-  // Close menu on Escape or when a link is clicked.
-  useEffect(() => {
-    if (!menuOpen) return;
-    const onKey = (e) => { if (e.key === "Escape") setMenuOpen(false); };
-    window.addEventListener("keydown", onKey);
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prev;
-    };
-  }, [menuOpen]);
-
   return (
     <header className="site-header">
       <div className="wrap">
@@ -154,45 +104,16 @@ function Header() {
           <span>الهولنس وورك</span>
         </a>
         <nav className="nav">
-          {links.map((l) => (
-            <a key={l.href} href={l.href}>{l.label}</a>
-          ))}
+          <a href="#what">ما هي</a>
+          <a href="#insights">المفاتيح</a>
+          <a href="#process">العملية</a>
+          <a href="#gallery">بصائر</a>
+          <a href="#experience">تجربة</a>
+          <a href="#trainer">المدرّب</a>
+          <a href="#contact">تواصل</a>
         </nav>
-        <button
-          type="button"
-          className={"nav-toggle" + (menuOpen ? " is-open" : "")}
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label={menuOpen ? "إغلاق القائمة" : "فتح القائمة"}
-          aria-expanded={menuOpen}
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
         <MusicToggle />
       </div>
-
-      {/* Mobile drawer */}
-      <div
-        className={"nav-drawer" + (menuOpen ? " is-open" : "")}
-        onClick={(e) => {
-          if (e.target.tagName === "A") setMenuOpen(false);
-        }}
-        aria-hidden={!menuOpen}
-      >
-        <nav>
-          {links.map((l) => (
-            <a key={l.href} href={l.href}>{l.label}</a>
-          ))}
-        </nav>
-      </div>
-      {menuOpen && (
-        <div
-          className="nav-backdrop"
-          onClick={() => setMenuOpen(false)}
-          aria-hidden="true"
-        />
-      )}
     </header>
   );
 }
@@ -242,24 +163,21 @@ function Hero() {
         <Reveal>
           <span className="hero-eyebrow">
             <span className="dot"></span>
-            <span className="eyebrow">The Wholeness Work</span>
+            <span className="eyebrow">عملية التكامل · The Wholeness Work</span>
           </span>
           <h1 className="display">
             الهولنس
             <span className="accent">وورك</span>
           </h1>
-          <p className="hero-sub">عمليّةُ التكامل</p>
           <p className="hero-lede">
-            تَلتَقي بِمشاعِركَ حَيثُ تَسكُنُ في الجَسَد،
-            فتَنحَلُّ مِن جُذورِها — دونَ مُقاوَمة، ودونَ شَرح.
+            طريقةٌ تأمُّليّة لطيفة...<br />
+            تَلتقي بمشاعرك حيث تَسكنُ في الجسد،
+            وتَحلُّها من جُذورِها.
           </p>
-          <div className="hero-cta">
-            <a href="#experience" className="btn btn-primary">
-              ابدأ التجربة الذاتيّة
-            </a>
-            <a href="#what" className="btn btn-ghost">
-              تَعرَّف على الطريقة
-            </a>
+          <div className="hero-meta">
+            <span>سبعُ خطواتٍ بسيطة</span>
+            <span>خمسةُ مفاتيحَ مميِّزة</span>
+            <span>منهجٌ كاملٌ في ١٤ يوماً</span>
           </div>
         </Reveal>
 
@@ -340,11 +258,6 @@ function WhatIsIt() {
               — رامانا مهارشي
             </div>
           </div>
-        </Reveal>
-
-        <Reveal as="p" className="bridge" delay={250}>
-          هذا التَّحوُّل يَستند إلى <em>خمسةِ مفاتيحَ</em> تَجعل المنهجَ
-          مختلفاً جوهريّاً عن سائر التقنيات.
         </Reveal>
       </div>
     </section>
@@ -444,11 +357,6 @@ function FiveKeys() {
             </article>
           ))}
         </Reveal>
-
-        <Reveal as="p" className="bridge" delay={200}>
-          والآن — كيف تُتَرجَم هذه المفاتيح إلى <em>عمليّةٍ عمليّة</em>؟
-          سبعُ خطواتٍ بسيطة، يُمكن حفظُها بعد جلسةٍ واحدة.
-        </Reveal>
       </div>
     </section>
   );
@@ -544,19 +452,18 @@ function Process() {
 }
 
 /* ---------- Visual Gallery ---------- */
-const GALLERY_ITEMS = [
-  { src: "images/ركائز.png",         cap: "ثلاث ركائزَ تَجعل هذا المنهج مختلفاً",  span: "span-3" },
-  { src: "images/مفتاح-الأنا.png",   cap: "الأنا ليست مفهوماً... بل موقعٌ فعليّ", span: "span-3" },
-  { src: "images/تضمين-جذري.png",    cap: "ذروة الاستنارة — التضمين الجذريّ",     span: "span-3" },
-  { src: "images/مسار-سعة.png",      cap: "المسار الثاني — التحوّل إلى السَّعة",   span: "span-3" },
-  { src: "images/مسار-طبقة.png",     cap: "المسار الثالث — انكشاف طبقةٍ جديدة",   span: "span-3" },
-  { src: "images/فخ-البحث.png",      cap: "فخّ البحث المستمرّ في الخارج",          span: "span-3" },
-  { src: "images/سر-عظيم.png",       cap: "السرّ العظيم — «المفقود» لم يكن خارجاً قطّ", span: "span-3" },
-  { src: "images/مؤشرات.png",        cap: "مؤشّرات التحوّل واكتمال العمليّة",      span: "span-6" },
-];
-
 function Gallery({ onOpen }) {
-  const items = GALLERY_ITEMS;
+  const items = [
+    { src: "images/زن-ماء.png",        cap: "ماءٌ يستلقي على ماء — جوهر الطريقة",  span: "span-4" },
+    { src: "images/ركائز.png",         cap: "ثلاث ركائزَ تَجعل هذا المنهج مختلفاً",  span: "span-2" },
+    { src: "images/مفتاح-الأنا.png",   cap: "الأنا ليست مفهوماً... بل موقعٌ فعليّ", span: "span-3" },
+    { src: "images/تضمين-جذري.png",    cap: "ذروة الاستنارة — التضمين الجذريّ",     span: "span-3" },
+    { src: "images/مسار-سعة.png",      cap: "المسار الثاني — التحوّل إلى السَّعة",   span: "span-3" },
+    { src: "images/مسار-طبقة.png",     cap: "المسار الثالث — انكشاف طبقةٍ جديدة",   span: "span-3" },
+    { src: "images/فخ-البحث.png",      cap: "فخّ البحث المستمرّ في الخارج",          span: "span-3" },
+    { src: "images/سر-عظيم.png",       cap: "السرّ العظيم — «المفقود» لم يكن خارجاً قطّ", span: "span-3" },
+    { src: "images/مؤشرات.png",        cap: "مؤشّرات التحوّل واكتمال العمليّة",      span: "span-6" },
+  ];
 
   return (
     <section className="block" id="gallery">
@@ -578,7 +485,7 @@ function Gallery({ onOpen }) {
             <button
               key={i}
               className={`g-card ${it.span}`}
-              onClick={() => onOpen(i)}
+              onClick={() => onOpen(it.src, it.cap)}
               aria-label={it.cap}
               type="button"
             >
@@ -593,15 +500,10 @@ function Gallery({ onOpen }) {
 }
 
 /* ---------- Lightbox ---------- */
-function Lightbox({ index, items, onClose, onNav }) {
-  const isOpen = index !== null && index >= 0;
+function Lightbox({ src, caption, onClose }) {
   useEffect(() => {
-    if (!isOpen) return;
-    const onKey = (e) => {
-      if (e.key === "Escape") onClose();
-      else if (e.key === "ArrowLeft") onNav(+1);   // RTL: ← moves to "next"
-      else if (e.key === "ArrowRight") onNav(-1);
-    };
+    if (!src) return;
+    const onKey = (e) => { if (e.key === "Escape") onClose(); };
     window.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -609,121 +511,599 @@ function Lightbox({ index, items, onClose, onNav }) {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = prev;
     };
-  }, [isOpen, onClose, onNav]);
-  if (!isOpen) return null;
-  const it = items[index];
+  }, [src, onClose]);
+  if (!src) return null;
   return (
-    <div className="lightbox" onClick={onClose} role="dialog" aria-label={it.cap}>
-      <button className="lb-close" onClick={onClose} aria-label="إغلاق">×</button>
-      <button
-        className="lb-nav lb-prev"
-        onClick={(e) => { e.stopPropagation(); onNav(-1); }}
-        aria-label="السابق"
-      >‹</button>
-      <button
-        className="lb-nav lb-next"
-        onClick={(e) => { e.stopPropagation(); onNav(+1); }}
-        aria-label="التالي"
-      >›</button>
-      <figure className="lb-figure" onClick={(e) => e.stopPropagation()}>
-        <img src={it.src} alt={it.cap} />
-        <figcaption className="lb-caption">{it.cap}</figcaption>
-      </figure>
-      <div className="lb-counter" aria-hidden="true">
-        {index + 1} / {items.length}
-      </div>
+    <div className="lightbox" onClick={onClose} role="dialog" aria-label={caption}>
+      <button className="close" onClick={onClose} aria-label="إغلاق">×</button>
+      <img src={src} alt={caption} onClick={(e) => e.stopPropagation()} />
     </div>
   );
 }
 
-/* ---------- Experience (embedded interactive taster) ---------- */
+/* ---------- Experience (guided inner journey) ---------- */
 const EXPERIENCE_TELEGRAM_URL =
   (typeof window !== "undefined" && window.HOLNESS_TELEGRAM_URL) ||
   "https://t.me/+holnesswork";
 
+const SENSATION_QUESTIONS = [
+  {
+    id: "state",
+    section: "حالته الجوهرية",
+    text: "كيف يَحضر إليك هذا الإحساس الآن؟ كأنّه…",
+    hint: "أنصت إليه قبل أن تختار — أيُّ الحالات تُشبهه أكثر؟",
+    type: "choice",
+    options: ["صلب", "سائل", "غازي", "ضبابي", "ضوئيّ", "فارغ"],
+  },
+  {
+    id: "thermal",
+    section: "طبيعته الحرارية",
+    text: "كيف هي حرارته؟",
+    hint: "اقترب من الإحساس بانتباهٍ هادئ، ثم اختَر الموضع الأقرب.",
+    type: "spectrum",
+    options: ["حارق", "دافئ", "فاتر", "محايد", "بارد قليلاً", "بارد", "متجمّد"],
+    labels: ["حارق", "متجمّد"],
+  },
+  {
+    id: "weight",
+    section: "ثِقَله",
+    text: "ما إحساس ثِقَله؟",
+    hint: "شدُّ الإحساس نحو الأسفل، بصرف النظر عن امتلائه.",
+    type: "spectrum",
+    options: [
+      "بلا وزن",
+      "خفيفٌ جداً",
+      "خفيف",
+      "متوسط",
+      "ثقيل",
+      "ثقيلٌ جداً",
+      "ضاغطٌ بشدّة",
+    ],
+    labels: ["بلا وزن", "ثقيلٌ جداً"],
+  },
+  {
+    id: "motion",
+    section: "حركته",
+    text: "هل هو ثابتٌ أم فيه حركة؟",
+    hint:
+      "حتى الإحساس الذي يَبدو ساكناً قد يَحمل نبضةً خفيّة — لاحظها قبل أن تختار.",
+    type: "choice",
+    options: ["ثابتٌ تماماً", "فيه حركةٌ خفيّة", "متحرّكٌ بوضوح", "يَنبض ويَهتزّ"],
+  },
+  {
+    id: "locus",
+    section: "موقعه",
+    text: "أين يَقع في فضاء جسدك أو وعيك؟",
+    hint: "قد لا يكون له موضعٌ تشريحيّ — يكفي أن تُشير إلى ما تَجده في إحساسك.",
+    type: "choice",
+    options: ["داخل الجسد", "خارج الجسد", "في الداخل والخارج معاً"],
+  },
+];
+
+const ORD_OBS = ["الأول", "الثاني", "الثالث"];
+
+function arDigits(n) {
+  return String(n).replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[d]);
+}
+
 function Experience() {
-  const iframeRef = useRef(null);
-  // Listen for height messages from taster.html and resize the iframe to fit.
-  useEffect(() => {
-    function onMessage(e) {
-      if (!e.data || e.data.type !== "holness:height") return;
-      const f = iframeRef.current;
-      if (!f) return;
-      const h = Math.max(560, Math.min(2000, Number(e.data.height) || 0));
-      f.style.height = h + "px";
+  const [stage, setStage] = useState({ kind: "welcome" });
+  const [primary, setPrimary] = useState({ name: "", location: "" });
+  const [sensation, setSensation] = useState({});
+  const [observers, setObservers] = useState([]);
+
+  // Form drafts kept separately so users can edit live without committing.
+  const [pName, setPName] = useState("");
+  const [pLoc, setPLoc] = useState("");
+  const [oName, setOName] = useState("");
+  const [oLoc, setOLoc] = useState("");
+  const [oType, setOType] = useState("");
+
+  // Visual highlight of the just-clicked sensation choice during the
+  // 420ms hold before auto-advancing to the next question.
+  const [lastSensChoice, setLastSensChoice] = useState({ qid: "", val: "" });
+  const advanceTimerRef = useRef(null);
+  useEffect(() => () => clearTimeout(advanceTimerRef.current), []);
+
+  const totalSteps = 7;
+  const stepIndex = (() => {
+    switch (stage.kind) {
+      case "welcome":
+        return 1;
+      case "primary":
+        return 2;
+      case "sensation":
+        return 3;
+      case "portrait":
+        return 4;
+      case "observer":
+        return 5;
+      case "invite":
+        return 6;
+      case "another":
+      case "complete":
+      default:
+        return 7;
     }
-    window.addEventListener("message", onMessage);
-    return () => window.removeEventListener("message", onMessage);
-  }, []);
+  })();
+
+  // ── transitions ──────────────────────────────────────────────────────
+  function gotoPrimary() {
+    setPName(primary.name);
+    setPLoc(primary.location);
+    setStage({ kind: "primary" });
+  }
+  function submitPrimary() {
+    setPrimary({ name: pName.trim(), location: pLoc.trim() });
+    setSensation({});
+    setStage({ kind: "sensation", idx: 0 });
+  }
+  function chooseSens(idx, qid, val) {
+    setSensation((prev) => ({ ...prev, [qid]: val }));
+    setLastSensChoice({ qid, val });
+    clearTimeout(advanceTimerRef.current);
+    advanceTimerRef.current = setTimeout(() => {
+      setLastSensChoice({ qid: "", val: "" });
+      if (idx + 1 < SENSATION_QUESTIONS.length) {
+        setStage({ kind: "sensation", idx: idx + 1 });
+      } else {
+        setStage({ kind: "portrait" });
+      }
+    }, 420);
+  }
+  function gotoObserver(idx) {
+    const existing = observers[idx] || { name: "", location: "", type: "" };
+    setOName(existing.name);
+    setOLoc(existing.location);
+    setOType(existing.type);
+    setStage({ kind: "observer", idx });
+  }
+  function submitObserver(idx) {
+    const next = observers.slice();
+    next[idx] = {
+      name: oName.trim(),
+      location: oLoc.trim(),
+      type: oType,
+      merged: false,
+    };
+    setObservers(next);
+    setStage({ kind: "invite", idx });
+  }
+  function onMerge(idx, merged) {
+    const next = observers.slice();
+    next[idx] = { ...next[idx], merged };
+    setObservers(next);
+    if (idx + 1 < 3) {
+      setStage({ kind: "another", idx });
+    } else {
+      setStage({ kind: "complete" });
+    }
+  }
+  function restart() {
+    setPrimary({ name: "", location: "" });
+    setSensation({});
+    setObservers([]);
+    setPName("");
+    setPLoc("");
+    setOName("");
+    setOLoc("");
+    setOType("");
+    setStage({ kind: "welcome" });
+  }
+
+  // ── screen builders ──────────────────────────────────────────────────
+  let card;
+  if (stage.kind === "welcome") {
+    card = (
+      <div className="exp-screen exp-welcome">
+        <div className="exp-orb" aria-hidden="true"></div>
+        <p className="exp-prompt">ابدأ حين تكون مستعدّاً.</p>
+        <p className="exp-hint">
+          خُذ نَفساً عميقاً. سأَسألك أسئلةً قصيرة — أَنصِت إلى ما يَحضر، لا
+          إلى ما تَعرفه.
+        </p>
+        <div className="exp-meta-line" aria-hidden="true">
+          <span>٥–١٠ دقائق</span>
+          <i></i>
+          <span>مكانٌ هادئ</span>
+          <i></i>
+          <span>حضورٌ صادق</span>
+        </div>
+        <div className="exp-actions">
+          <button className="exp-btn exp-btn-primary" onClick={gotoPrimary}>
+            ابدأ المسار
+          </button>
+        </div>
+        <p className="exp-fine">
+          هذه ليست نصيحةً طبيّة أو نفسيّة. إن كنتَ تَمرّ بضائقةٍ شديدة، تواصَل
+          مع مختصٍّ مؤهَّل.
+        </p>
+      </div>
+    );
+  } else if (stage.kind === "primary") {
+    const canNext = pName.trim() && pLoc.trim();
+    card = (
+      <div className="exp-screen">
+        <div className="exp-eyebrow">المرحلة الأولى</div>
+        <p className="exp-prompt">ما الشعور الذي يَحضر إليك الآن؟</p>
+        <p className="exp-hint">
+          لا تَحكم عليه ولا تُفسِّره — فقط سَمِّه باسمه الأقرب.
+        </p>
+        <div className="exp-field">
+          <input
+            type="text"
+            value={pName}
+            onChange={(e) => setPName(e.target.value)}
+            placeholder="مثال: قلقٌ في صدري، ثِقَلٌ غامض، حنين…"
+            autoFocus
+          />
+        </div>
+
+        <p className="exp-prompt exp-prompt-sm">
+          وأين تَجدهُ في جسدك أو وعيك؟
+        </p>
+        <p className="exp-hint">
+          قد يكون له موضعٌ واضح، أو إحساسٌ منتشر. صِفه كما يَبدو لك.
+        </p>
+        <div className="exp-field">
+          <input
+            type="text"
+            value={pLoc}
+            onChange={(e) => setPLoc(e.target.value)}
+            placeholder="مثال: في وسط الصدر، خلف الجبهة، حول الكتفين…"
+          />
+        </div>
+
+        <div className="exp-actions">
+          <button
+            className="exp-btn exp-btn-ghost"
+            onClick={() => setStage({ kind: "welcome" })}
+          >
+            رجوع
+          </button>
+          <button
+            className="exp-btn exp-btn-primary"
+            disabled={!canNext}
+            onClick={submitPrimary}
+          >
+            متابعة
+          </button>
+        </div>
+      </div>
+    );
+  } else if (stage.kind === "sensation") {
+    const idx = stage.idx;
+    const q = SENSATION_QUESTIONS[idx];
+    const total = SENSATION_QUESTIONS.length;
+    const back = () =>
+      idx === 0
+        ? gotoPrimary()
+        : setStage({ kind: "sensation", idx: idx - 1 });
+
+    const isSelected = (val) =>
+      sensation[q.id] === val ||
+      (lastSensChoice.qid === q.id && lastSensChoice.val === val);
+
+    card = (
+      <div className="exp-screen">
+        <div className="exp-eyebrow">
+          {q.section} &nbsp;·&nbsp; {arDigits(idx + 1)} من {arDigits(total)}
+        </div>
+        <p className="exp-prompt">{q.text}</p>
+        <p className="exp-hint">{q.hint}</p>
+
+        {q.type === "choice" && (
+          <div className="exp-choices">
+            {q.options.map((o) => (
+              <button
+                key={o}
+                className={
+                  "exp-choice" + (isSelected(o) ? " is-selected" : "")
+                }
+                onClick={() => chooseSens(idx, q.id, o)}
+              >
+                {o}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {q.type === "spectrum" && (
+          <>
+            <div className="exp-spectrum">
+              {q.options.map((o) => (
+                <button
+                  key={o}
+                  className={
+                    "exp-spec-dot" + (isSelected(o) ? " is-selected" : "")
+                  }
+                  data-label={o}
+                  aria-label={o}
+                  onClick={() => chooseSens(idx, q.id, o)}
+                ></button>
+              ))}
+            </div>
+            <div className="exp-spec-labels">
+              <span>{q.labels[0]}</span>
+              <span>{q.labels[1]}</span>
+            </div>
+          </>
+        )}
+
+        <div className="exp-progress-dots">
+          {SENSATION_QUESTIONS.map((_, i) => (
+            <span
+              key={i}
+              className={
+                i < idx ? "is-done" : i === idx ? "is-active" : ""
+              }
+            ></span>
+          ))}
+        </div>
+
+        <div className="exp-actions">
+          <button className="exp-btn exp-btn-ghost" onClick={back}>
+            رجوع
+          </button>
+        </div>
+      </div>
+    );
+  } else if (stage.kind === "portrait") {
+    const s = sensation;
+    const traits = [
+      `حالته ${s.state}`,
+      `حرارته ${s.thermal}`,
+      `وزنه ${s.weight}`,
+      s.motion,
+      `موقعه ${s.locus}`,
+    ]
+      .filter(Boolean)
+      .join(" · ");
+
+    card = (
+      <div className="exp-screen">
+        <div className="exp-eyebrow">بورتريه حسّيّ</div>
+        <p className="exp-lede">هذا ما رَسمتَه عن نوعيّة إحساسك الآن:</p>
+        <div className="exp-portrait">
+          <span className="exp-portrait-what">{primary.name}</span>
+          <span className="exp-portrait-where"> — في {primary.location}</span>
+          <span className="exp-portrait-traits">{traits}</span>
+        </div>
+        <div className="exp-ornament" aria-hidden="true">۞</div>
+        <p className="exp-narration">{`— انتهى استكشاف الشعور الأساسي —
+
+خذ لحظةً هادئة.
+
+الآن نَتحوّل إلى شيءٍ دقيق:
+هناك جزءٌ منكَ يُلاحظ هذا الشعور ويُراقبه من بعيد —
+ليس الشعور نفسه، بل ذلك الذي يَعرف بوجوده.
+
+راقب في مساحة وعيك الداخليّ.`}</p>
+        <div className="exp-actions">
+          <button
+            className="exp-btn exp-btn-primary"
+            onClick={() => gotoObserver(0)}
+          >
+            تابع إلى المراقب
+          </button>
+        </div>
+      </div>
+    );
+  } else if (stage.kind === "observer") {
+    const idx = stage.idx;
+    const canNext = oName.trim() && oLoc.trim() && oType;
+    card = (
+      <div className="exp-screen">
+        <div className="exp-eyebrow">
+          المرحلة الثانية &nbsp;·&nbsp; المراقب {ORD_OBS[idx]}
+        </div>
+        <p className="exp-prompt">هل تَجد جزءاً منكَ يُراقب «{primary.name}»؟</p>
+        <p className="exp-hint">
+          قد يكون إحساساً جسديّاً، أو فكرةً ذهنيّة، أو شعوراً عاطفيّاً
+          يُلاحظ من بعيد.
+        </p>
+        <div className="exp-field">
+          <input
+            type="text"
+            value={oName}
+            onChange={(e) => setOName(e.target.value)}
+            placeholder="صف هذا المراقب باختصار…"
+            autoFocus
+          />
+        </div>
+
+        <p className="exp-prompt exp-prompt-sm">أين تَجده؟</p>
+        <p className="exp-hint">
+          في مساحة الوعي الداخلي — قد يكون أعلى الرأس، خلف العين، فوق
+          الكتف…
+        </p>
+        <div className="exp-field">
+          <input
+            type="text"
+            value={oLoc}
+            onChange={(e) => setOLoc(e.target.value)}
+            placeholder="مثال: فوق الرأس، خلف الصدر، إلى اليسار…"
+          />
+        </div>
+
+        <p className="exp-prompt exp-prompt-sm">ما طبيعته الأقرب؟</p>
+        <div className="exp-choices">
+          {["جسديّ", "ذهنيّ", "عاطفيّ"].map((t) => (
+            <button
+              key={t}
+              className={"exp-choice" + (oType === t ? " is-selected" : "")}
+              onClick={() => setOType(t)}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+
+        <div className="exp-actions">
+          <button
+            className="exp-btn exp-btn-ghost"
+            onClick={() => setStage({ kind: "portrait" })}
+          >
+            رجوع
+          </button>
+          <button
+            className="exp-btn exp-btn-primary"
+            disabled={!canNext}
+            onClick={() => submitObserver(idx)}
+          >
+            متابعة
+          </button>
+        </div>
+      </div>
+    );
+  } else if (stage.kind === "invite") {
+    const idx = stage.idx;
+    const obs = observers[idx] || {};
+    card = (
+      <div className="exp-screen exp-invite">
+        <div className="exp-orb exp-orb-sm" aria-hidden="true"></div>
+        <div className="exp-eyebrow">لحظةُ الدعوة</div>
+        <p className="exp-narration">{`انتبه إلى المراقب في «${obs.location}».
+
+استَدِر إليه بلطفٍ في وعيك،
+وادْعُه — دون إجبار — إلى الاندماج معك،
+لا لتُغيِّره، بل ليَكون جزءاً منكَ من جديد.
+
+تَذكَّر أنك لستَ المتحكِّم في الاندماج —
+دَع الحكمة الداخلية تَفعل عملها على إيقاعها.`}</p>
+        <div className="exp-ornament" aria-hidden="true">۞</div>
+        <p className="exp-prompt">هل قَبِل المراقبُ دعوةَ الاندماج؟</p>
+        <div className="exp-actions exp-actions-stack">
+          <button
+            className="exp-btn exp-btn-accent"
+            onClick={() => onMerge(idx, true)}
+          >
+            نعم — اكتمل الاندماج
+          </button>
+          <button
+            className="exp-btn exp-btn-ghost"
+            onClick={() => onMerge(idx, false)}
+          >
+            لم يَكتمل بعد
+          </button>
+        </div>
+      </div>
+    );
+  } else if (stage.kind === "another") {
+    const idx = stage.idx;
+    card = (
+      <div className="exp-screen">
+        <div className="exp-eyebrow">سؤالٌ هادئ</div>
+        <p className="exp-prompt">هل تَجد مراقباً آخر لهذا الشعور؟</p>
+        <p className="exp-hint">
+          خذ لحظةً، وانظر في مساحة وعيك — أحياناً يَظهر مراقبٌ آخر بعد أن
+          يَكتمل الأول. وأحياناً تَكفي خطوةٌ واحدة.
+        </p>
+        <div className="exp-actions exp-actions-stack">
+          <button
+            className="exp-btn exp-btn-primary"
+            onClick={() => gotoObserver(idx + 1)}
+          >
+            نعم — أرى مراقباً آخر
+          </button>
+          <button
+            className="exp-btn exp-btn-ghost"
+            onClick={() => setStage({ kind: "complete" })}
+          >
+            يَكفي — أنهِ التأمّل
+          </button>
+        </div>
+      </div>
+    );
+  } else if (stage.kind === "complete") {
+    const mergedCount = observers.filter((o) => o.merged).length;
+    const total = observers.length;
+    let reflection;
+    if (total > 0 && mergedCount === total) {
+      reflection = `كلُّ المراقبين الذين رأيتَهم قَبِلوا الدعوة (${arDigits(
+        mergedCount
+      )} من ${arDigits(total)}).
+ربما تَلمَح اتّساعاً ناعماً، أو هدوءاً لم يَكن قبل قليل.`;
+    } else if (mergedCount === 0) {
+      reflection = `لم يَكتمل اندماجٌ كاملٌ هذه المرّة — وهذا تمامٌ بحدّ ذاته.
+كثيراً ما يَحتاج المراقب إلى مساحةٍ أوسع، أو إلى جلسةٍ مع مُيسِّر،
+ليَأذن لنفسه بالاندماج.`;
+    } else {
+      reflection = `اندَمج معكَ ${arDigits(mergedCount)} من أصل ${arDigits(
+        total
+      )} مراقبين.
+لاحظ ما تَغيَّر — في الإحساس، في النَّفَس، في المساحة الداخليّة.`;
+    }
+
+    card = (
+      <div className="exp-screen exp-complete">
+        <div className="exp-seal" aria-hidden="true"></div>
+        <div className="exp-eyebrow">نهايةُ المسار</div>
+        <h3 className="exp-title">شكراً لحضورِكَ.</h3>
+        <p className="exp-narration">{`${reflection}
+
+خذ لحظةً قبل أن تَعود —
+لاحظ نَفَسَكَ، ثم افتح عينيكَ على المكان الذي أنتَ فيه.`}</p>
+        <div className="exp-ornament" aria-hidden="true">۞</div>
+        <p className="exp-lede">
+          هذه كانت لمحةً مبسّطةً من تقنية الهولنس وورك. المسارُ الكامل
+          أعمَق وأرحَب — وفيه أدواتٌ لاكتشاف السلطة، والاحتياجات، والهوية،
+          والتحرّر.
+        </p>
+        <div className="exp-actions exp-actions-stack">
+          <a
+            className="exp-btn exp-btn-accent"
+            href={EXPERIENCE_TELEGRAM_URL}
+            target="_blank"
+            rel="noopener"
+          >
+            انضمّ إلى الدورة التعريفية على تلجرام «٣ أيام»
+          </a>
+          <button className="exp-btn exp-btn-ghost" onClick={restart}>
+            جرّب مسارَ تأمّلٍ آخر
+          </button>
+        </div>
+        <p className="exp-fine">
+          هذه التجربة محليّة بالكامل — لم يُحفَظ شيءٌ ممّا كتبتَه.
+          <br />
+          ما رأيتَه هنا كان بينَك وبين نفسك فقط.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <section className="block" id="experience">
       <div className="wrap">
         <Reveal as="div" className="experience">
-          <span className="eyebrow">٥ · تجربة</span>
-          <h2>تَجِربةٌ، واكتشِف الاختلافاتِ بنفسك.</h2>
+          <span className="eyebrow">٥ · تجربة قصيرة</span>
+          <h2>مسارٌ هادئٌ نحو الداخل.</h2>
           <p className="intro">
-            مسارٌ تَأمُّليٌّ قصير، تَخوضه الآن دون تسجيلٍ ولا حِفظِ بيانات.
-            خُذ ٥–١٠ دقائق هادئة، وانتبه إلى ما يَتغيَّر بين
-            <em> «قَبل» </em> و<em> «بَعد»</em>. الفَرقُ هو الإجابة.
+            ليست جلسةً كاملة — فالجلسةُ الحقيقيّة تَستغرق نحو عشرين دقيقة مع
+            مُيَسِّر. هذه <em>ذوقٌ</em> موجَّه: شعورٌ واحد، خمس نوعيّاتٍ حسّيّة،
+            ثم زيارةٌ هادئة لـ«المراقب» الذي يَعِيه. لا تسجيل، لا حفظ —
+            بَينَكَ وبين نفسك.
           </p>
 
-          <div className="taster-frame">
-            <iframe
-              ref={iframeRef}
-              src="taster.html"
-              title="مسار التأمّل التعريفيّ — الهولنس وورك"
-              loading="lazy"
-              allow="autoplay"
-              scrolling="no"
-            ></iframe>
-          </div>
-
-          <div className="tg-card">
-            <div className="tg-card-head">
-              <div className="tg-icon" aria-hidden="true">
-                <svg viewBox="0 0 32 32" fill="currentColor">
-                  <path d="M16 0C7.16 0 0 7.16 0 16s7.16 16 16 16 16-7.16 16-16S24.84 0 16 0zm7.42 10.96l-2.48 11.7c-.19.83-.68 1.04-1.38.65l-3.8-2.8-1.83 1.76c-.2.2-.37.37-.76.37l.27-3.86 7.04-6.37c.31-.27-.07-.42-.47-.16l-8.7 5.48-3.75-1.17c-.81-.25-.83-.81.17-1.2l14.66-5.65c.68-.25 1.27.16 1.03 1.25z" />
-                </svg>
+          <div className="exp-shell">
+            <header className="exp-shell-head">
+              <div className="exp-shell-brand">
+                <BrandMark />
+                <span>الهولنس وورك</span>
               </div>
-              <div>
-                <div className="tg-card-eyebrow">دورةٌ تعريفيّةٌ مَجّانيّة على تلجرام</div>
-                <h3 className="tg-card-title">٣ أيّام · ٣ محطّاتٍ تَتدرَّج معك</h3>
+              <div className="exp-shell-step">
+                {arDigits(stepIndex)} / {arDigits(totalSteps)}
               </div>
-            </div>
-
-            <p className="tg-card-lede">
-              ما الذي ستَتعرَّف عليه في الأيّام الثلاثة:
-            </p>
-
-            <ul className="tg-card-list">
-              <li>
-                <span>اليوم الأوّل</span>
-                اللقاءُ الأوّل مع التقنية والمفاهيم الجوهريّة.
-              </li>
-              <li>
-                <span>اليوم الثاني</span>
-                التجربةُ العمليّةُ الكاملة عبرَ مسار التأمّل.
-              </li>
-              <li>
-                <span>اليوم الثالث</span>
-                الفهمُ الأعمَق وخريطةُ الطريق.
-              </li>
-            </ul>
-
-            <a
-              className="tg-card-btn"
-              href={EXPERIENCE_TELEGRAM_URL}
-              target="_blank"
-              rel="noopener"
+            </header>
+            <div
+              className="exp-card"
+              key={
+                stage.kind +
+                (stage.idx !== undefined ? ":" + stage.idx : "")
+              }
             >
-              انضمَّ إلى قناة تلجرام
-              <span className="tg-card-arrow" aria-hidden="true">←</span>
-            </a>
-
-            <p className="tg-card-fine">
-              مجّانيّة تماماً · بلا التزام · يُمكنك المغادرة في أيّ وقت
-            </p>
+              {card}
+            </div>
           </div>
         </Reveal>
       </div>
@@ -877,78 +1257,6 @@ function Trainer() {
   );
 }
 
-/* ---------- FAQ ---------- */
-function Faq() {
-  const items = [
-    {
-      q: "هل هذا بَديلٌ للعلاج النفسيّ؟",
-      a: "لا. الهولنس وورك طريقةٌ تأمُّليّةٌ ذاتيّة، ليست علاجاً طِبِّياً ولا بَديلاً عنه. إن كنتَ تَمرّ بضائقةٍ نفسيّةٍ شديدة، فالأَولى مراجعةُ مختصٍّ مؤهَّل. لكنّها تَتكامل بشكلٍ جميل مع العلاج، ويَستَخدِمها كثيرٌ من المُعالِجين كأداةٍ مُساعِدة.",
-    },
-    {
-      q: "كم تَستغرق الجلسة الواحدة؟",
-      a: "الجلسةُ الكاملةُ مع مُيَسِّر تَستغرق عادةً ٢٠ إلى ٤٠ دقيقة. السبعُ الخطوات نَفسُها يُمكن المرورُ بها في ١٠ دقائق بعد التَّمكُّن منها، أو في جلسةٍ أعمَقَ ساعةً كاملة حسب الحالة.",
-    },
-    {
-      q: "ما الفَرقُ بين الهولنس وورك والـ NLP أو IFS؟",
-      a: "الـ NLP يَعمل على البِنية اللغويّة للتجربة الذهنيّة. الـ IFS (Internal Family Systems) يَعمل مع «الأجزاء» الداخليّة كشخصيّات. الهولنس وورك يَنطلق من بَعدٍ أعمَق: «الأنا» نفسُها كمكانٍ حسّيّ في الجسد، تُحَلُّ بالعَودة إلى الوعي الذي يَحتويها. د. كونيري أندرياس — مؤسِّسةُ المنهج — من روّاد الـ NLP، فالطريقةُ تَستفيد من خبرتها فيه لكنها تَتجاوزُه إلى مستوى أعمَق.",
-    },
-    {
-      q: "هل تَتعارض مع الدِّين أو القِيَم الإسلاميّة؟",
-      a: "لا تَدّعي الطريقةُ أيَّ مَرجعيّةٍ دينيّةٍ أو روحانيّةٍ خاصّة. هي مَنهجٌ حسّيٌّ يَتعامل مع كيفيّةِ سُكنى المشاعر في الجسد. النّاسُ من خلفيّاتٍ دينيّةٍ مختلفة — مُسلمون، مسيحيّون، بوذيّون، لا دينيّون — يَستفيدون منها. القرارُ في كيفيّةِ تفسير التَّجربة يَبقى لكَ تماماً.",
-    },
-    {
-      q: "هل يَعمل عَن بُعد؟",
-      a: "نعم تماماً. الجلساتُ الفرديّة تُعقَد عبر زوم/جوجل ميت، والدوراتُ الجماعيّة كذلك. الطريقةُ لا تَحتاج تَلامُساً جسديّاً ولا حضوراً ماديّاً — فهي عَملٌ داخليّ بحت.",
-    },
-    {
-      q: "ماذا لو لم أَشعر بشيءٍ في الجلسة؟",
-      a: "هذا طبيعيٌّ ويَحدُث. أحياناً يَحتاج المراقبُ مساحةً أوسع، أو وَقتاً أطول، أو جلسةً أُخرى. غيابُ النتيجة الفوريّة لا يَعني فَشل الطريقة — بل أنّ الإيقاع الداخليّ يَحتاج وَقتَه. في الدورة الكاملة، نَتعامل مع هذه الحالات بأدواتٍ خاصّة.",
-    },
-  ];
-
-  const [open, setOpen] = useState(0);
-
-  return (
-    <section className="block" id="faq">
-      <div className="wrap">
-        <Reveal as="div" className="section-head">
-          <div className="num quote">٨ · أسئلةٌ متكرّرة</div>
-          <h2>قبل أن تَبدأ، إجاباتُ ما يَخطر للأكثريّة.</h2>
-        </Reveal>
-
-        <Reveal as="div" className="faq" delay={120}>
-          {items.map((it, i) => {
-            const isOpen = open === i;
-            return (
-              <div className={"faq-item" + (isOpen ? " is-open" : "")} key={i}>
-                <button
-                  className="faq-q"
-                  onClick={() => setOpen(isOpen ? -1 : i)}
-                  aria-expanded={isOpen}
-                  aria-controls={`faq-a-${i}`}
-                >
-                  <span className="faq-q-text">{it.q}</span>
-                  <span className="faq-q-mark" aria-hidden="true">
-                    {isOpen ? "−" : "+"}
-                  </span>
-                </button>
-                <div
-                  className="faq-a"
-                  id={`faq-a-${i}`}
-                  role="region"
-                  hidden={!isOpen}
-                >
-                  {it.a}
-                </div>
-              </div>
-            );
-          })}
-        </Reveal>
-      </div>
-    </section>
-  );
-}
-
 /* ---------- Contact ---------- */
 function Contact() {
   const wa = "https://wa.me/96896767693";
@@ -959,7 +1267,7 @@ function Contact() {
         <Reveal as="div" className="contact">
           <div className="contact-grid">
             <div>
-              <span className="eyebrow">٩ · تواصل · حجز · دورات</span>
+              <span className="eyebrow">٨ · تواصل · حجز · دورات</span>
               <h2>ابدأ من حيثُ أنت.</h2>
               <p className="lede">
                 إن أردتَ معرفةَ المزيد، أو حجزَ جلسةٍ فرديّة، أو الانضمامَ
@@ -1041,16 +1349,9 @@ function Footer() {
 
 /* ---------- App ---------- */
 function App() {
-  const [lbIndex, setLbIndex] = useState(null);
-  const open = (i) => setLbIndex(i);
-  const close = () => setLbIndex(null);
-  const nav = (delta) => {
-    setLbIndex((cur) => {
-      if (cur === null) return cur;
-      const n = GALLERY_ITEMS.length;
-      return ((cur + delta) % n + n) % n;
-    });
-  };
+  const [lb, setLb] = useState({ src: null, caption: "" });
+  const open = (src, caption) => setLb({ src, caption });
+  const close = () => setLb({ src: null, caption: "" });
   return (
     <>
       <Header />
@@ -1063,17 +1364,11 @@ function App() {
         <Experience />
         <Founder />
         <Trainer />
-        <Faq />
         <Contact />
         <Closing />
       </main>
       <Footer />
-      <Lightbox
-        index={lbIndex}
-        items={GALLERY_ITEMS}
-        onClose={close}
-        onNav={nav}
-      />
+      <Lightbox src={lb.src} caption={lb.caption} onClose={close} />
     </>
   );
 }
