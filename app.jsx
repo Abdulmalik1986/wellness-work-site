@@ -13,6 +13,87 @@ function BrandMark() {
   );
 }
 
+/* ---------- Background music toggle ---------- */
+function MusicToggle() {
+  const [playing, setPlaying] = useState(false);
+  const audioRef = useRef(null);
+  // Tracks a deferred-start pending the first user gesture. Browsers block
+  // programmatic play() without prior interaction; if the saved preference
+  // is "on", we wait for any click/keydown and resume from there.
+  const pendingStartRef = useRef(false);
+
+  useEffect(() => {
+    const a = new Audio("audio/ambient.mp3");
+    a.loop = true;
+    a.preload = "auto";
+    a.volume = 0.5;
+    audioRef.current = a;
+
+    const saved = localStorage.getItem("bgMusic");
+    if (saved === "on") {
+      a.play()
+        .then(() => setPlaying(true))
+        .catch(() => {
+          // Autoplay blocked — arm a one-shot resume on first interaction.
+          pendingStartRef.current = true;
+          const trigger = () => {
+            if (!pendingStartRef.current) return;
+            pendingStartRef.current = false;
+            a.play().then(() => setPlaying(true)).catch(() => {});
+            document.removeEventListener("click", trigger, true);
+            document.removeEventListener("keydown", trigger, true);
+          };
+          document.addEventListener("click", trigger, true);
+          document.addEventListener("keydown", trigger, true);
+        });
+    }
+
+    return () => {
+      a.pause();
+      audioRef.current = null;
+      pendingStartRef.current = false;
+    };
+  }, []);
+
+  function toggle() {
+    const a = audioRef.current;
+    if (!a) return;
+    pendingStartRef.current = false;
+    if (playing) {
+      a.pause();
+      setPlaying(false);
+      localStorage.setItem("bgMusic", "off");
+    } else {
+      a.play()
+        .then(() => {
+          setPlaying(true);
+          localStorage.setItem("bgMusic", "on");
+        })
+        .catch((err) => {
+          console.warn("Music play blocked:", err);
+        });
+    }
+  }
+
+  return (
+    <button
+      type="button"
+      className={"music-toggle" + (playing ? " is-playing" : "")}
+      onClick={toggle}
+      aria-label={playing ? "إيقاف موسيقى الخلفية" : "تشغيل موسيقى الخلفية"}
+      title={playing ? "إيقاف الموسيقى" : "تشغيل الموسيقى"}
+    >
+      <span className="mt-bars" aria-hidden="true">
+        <i></i>
+        <i></i>
+        <i></i>
+        <i></i>
+      </span>
+      <span className="mt-label">{playing ? "موسيقى" : "موسيقى"}</span>
+    </button>
+  );
+}
+
 /* ---------- Header ---------- */
 function Header() {
   return (
@@ -31,6 +112,7 @@ function Header() {
           <a href="#trainer">المدرّب</a>
           <a href="#contact">تواصل</a>
         </nav>
+        <MusicToggle />
       </div>
     </header>
   );
