@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>تنزيل تطبيق HolnessWork</title>
+  <meta name="robots" content="noindex, nofollow" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Markazi+Text:wght@400;500;600&family=Amiri:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'><circle cx='13' cy='13' r='12' fill='none' stroke='%23a87a3e' stroke-width='1.4'/><circle cx='13' cy='13' r='8' fill='none' stroke='%23a87a3e' stroke-width='1.2'/><circle cx='13' cy='13' r='4' fill='none' stroke='%23a87a3e' stroke-width='1'/><circle cx='13' cy='13' r='1.5' fill='%23a87a3e'/></svg>" />
+
+  <style>
+    :root {
+      --bg:        #f3ece0;
+      --paper:     #faf5ec;
+      --paper-2:   #f5ede0;
+      --ink:       #1a1612;
+      --ink-2:     #3d342a;
+      --muted:     #7a6f5f;
+      --whisper:   #c9bda9;
+      --line:      #d9cfbd;
+      --gold:      #a87a3e;
+      --gold-soft: #d4b886;
+      --amber:     #e2c896;
+      --green:     #3a7a4e;
+      --green-bg:  #edf5f0;
+      --blue:      #2a5a8a;
+      --blue-bg:   #edf2f8;
+
+      --display: "Markazi Text", "Amiri", serif;
+      --body:    "IBM Plex Sans Arabic", "Tajawal", system-ui, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100vh;
+      font-family: var(--body);
+      font-size: 16px;
+      line-height: 1.85;
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      overflow-x: hidden;
+    }
+
+    body {
+      background:
+        radial-gradient(ellipse 1200px 700px at 50% -10%, #f9f1e1 0%, transparent 60%),
+        radial-gradient(ellipse 900px 600px at 90% 110%, #ecdcbf 0%, transparent 55%),
+        var(--bg);
+    }
+
+    body::before {
+      content: "";
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 0;
+      opacity: 0.28; mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='3'/><feColorMatrix values='0 0 0 0 0.2  0 0 0 0 0.15  0 0 0 0 0.1  0 0 0 0.05 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    }
+
+    .page {
+      position: relative; z-index: 1;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 24px 72px;
+    }
+
+    /* ── الشعار ── */
+    .brand {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 10px;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    .brand-mark { width: 50px; height: 50px; }
+    .brand-name {
+      font-family: var(--display);
+      font-size: 26px; font-weight: 500;
+      color: var(--ink);
+    }
+    .brand-sub { font-size: 12px; color: var(--muted); letter-spacing: 0.06em; }
+
+    /* ── بطاقة عامة ── */
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 36px 40px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(26,22,18,.05), 0 10px 32px rgba(26,22,18,.07);
+      position: relative; overflow: hidden;
+    }
+    .card::before {
+      content: "";
+      position: absolute; top: 0; right: 0; left: 0; height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    /* ── عناوين الأقسام ── */
+    .section-title {
+      font-family: var(--display);
+      font-size: 26px; font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 6px;
+      text-align: center;
+    }
+    .section-sub {
+      font-size: 14px; color: var(--muted);
+      text-align: center; margin-bottom: 28px;
+    }
+
+    .divider {
+      border: none; border-top: 1px solid var(--line);
+      margin: 24px 0;
+    }
+
+    /* ── بطاقات التنزيل ── */
+    .downloads { display: flex; flex-direction: column; gap: 14px; }
+
+    .dl-item {
+      display: flex; align-items: center; gap: 16px;
+      background: rgba(168,122,62,.05);
+      border: 1px solid rgba(168,122,62,.2);
+      border-radius: 14px;
+      padding: 18px 22px;
+      text-decoration: none; color: inherit;
+      transition: all 0.2s ease;
+    }
+    .dl-item:hover {
+      border-color: rgba(168,122,62,.5);
+      box-shadow: 0 4px 20px rgba(168,122,62,.14);
+      transform: translateY(-2px);
+    }
+    .dl-icon {
+      width: 46px; height: 46px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(168,122,62,.1); border-radius: 11px;
+    }
+    .dl-icon svg { width: 24px; height: 24px; }
+    .dl-info { flex: 1; }
+    .dl-name { font-family: var(--display); font-size: 19px; font-weight: 500; color: var(--ink); line-height: 1.2; }
+    .dl-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    .dl-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--gold); color: #fff;
+      font-family: var(--body); font-size: 13px; font-weight: 500;
+      padding: 9px 18px; border-radius: 9px;
+      border: none; cursor: pointer;
+      text-decoration: none; white-space: nowrap; flex-shrink: 0;
+      transition: background 0.18s, box-shadow 0.18s;
+    }
+    .dl-btn:hover { background: #8f6530; box-shadow: 0 4px 14px rgba(168,122,62,.4); }
+    .dl-btn svg { width: 14px; height: 14px; }
+
+    /* ── تبويبات نظام التثبيت ── */
+    .tabs { display: flex; gap: 0; margin-bottom: 24px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); }
+    .tab-btn {
+      flex: 1; padding: 12px 16px;
+      font-family: var(--body); font-size: 14px; font-weight: 500;
+      border: none; cursor: pointer; background: var(--paper-2);
+      color: var(--muted); transition: all 0.18s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .tab-btn:first-child { border-left: 1px solid var(--line); }
+    .tab-btn.active { background: var(--gold); color: #fff; }
+    .tab-btn svg { width: 16px; height: 16px; }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ── خطوات التثبيت ── */
+    .steps { display: flex; flex-direction: column; gap: 16px; }
+
+    .step {
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+    .step-num {
+      width: 30px; height: 30px; flex-shrink: 0;
+      background: var(--gold); color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--display); font-size: 15px; font-weight: 500;
+      margin-top: 2px;
+    }
+    .step-body { flex: 1; }
+    .step-title {
+      font-weight: 600; font-size: 15px;
+      color: var(--ink-2); margin-bottom: 4px;
+    }
+    .step-desc { font-size: 14px; color: var(--muted); line-height: 1.7; }
+    .step-desc strong { color: var(--ink-2); font-weight: 600; }
+
+    /* ── تنبيه ── */
+    .notice {
+      background: rgba(168,122,62,.07);
+      border-right: 3px solid var(--gold-soft);
+      border-radius: 0 10px 10px 0;
+      padding: 12px 16px;
+      font-size: 13px; color: var(--muted);
+      line-height: 1.7; margin-top: 16px;
+    }
+    .notice strong { color: var(--ink-2); }
+
+    /* ── بطاقة التفعيل ── */
+    .activation-box {
+      background: linear-gradient(135deg, #fdf8ee 0%, #f5ede0 100%);
+      border: 1.5px solid var(--gold-soft);
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 24px;
+      position: relative; overflow: hidden;
+    }
+    .activation-box::before {
+      content: "";
+      position: absolute; top: 0; right: 0; left: 0; height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .activation-title {
+      font-family: var(--display); font-size: 23px; font-weight: 500;
+      color: var(--ink); margin-bottom: 6px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .badge-important {
+      font-family: var(--body); font-size: 11px; font-weight: 600;
+      background: #c0392b; color: #fff;
+      padding: 3px 10px; border-radius: 20px;
+      letter-spacing: 0.03em;
+    }
+    .activation-desc { font-size: 14px; color: var(--muted); margin-bottom: 20px; line-height: 1.75; }
+
+    .activation-steps { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+    .act-step { display: flex; gap: 12px; align-items: flex-start; }
+    .act-num {
+      width: 24px; height: 24px; flex-shrink: 0;
+      background: var(--gold-soft); color: var(--ink-2);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; margin-top: 2px;
+    }
+    .act-text { font-size: 14px; color: var(--ink-2); line-height: 1.7; }
+    .act-text strong { color: var(--ink); }
+
+    .whatsapp-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: #25d366; color: #fff;
+      font-family: var(--body); font-size: 15px; font-weight: 600;
+      padding: 13px 28px; border-radius: 12px;
+      text-decoration: none; letter-spacing: 0.01em;
+      transition: background 0.18s, box-shadow 0.18s;
+      margin-top: 4px;
+    }
+    .whatsapp-btn:hover { background: #1da855; box-shadow: 0 6px 20px rgba(37,211,102,.35); }
+    .whatsapp-btn svg { width: 20px; height: 20px; }
+
+    .activation-note {
+      margin-top: 14px;
+      font-size: 13px; color: var(--muted);
+      background: rgba(168,122,62,.07);
+      border-radius: 8px; padding: 10px 14px;
+      line-height: 1.7;
+    }
+    .activation-note strong { color: var(--ink-2); }
+
+    /* ── متطلبات التشغيل ── */
+    .reqs-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px; margin-top: 4px;
+    }
+    .req-box {
+      background: var(--paper-2);
+      border: 1px solid var(--line);
+      border-radius: 12px; padding: 18px 20px;
+    }
+    .req-title {
+      font-family: var(--display); font-size: 17px; font-weight: 500;
+      color: var(--ink); margin-bottom: 12px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .req-title svg { width: 18px; height: 18px; }
+    .req-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+    .req-list li {
+      font-size: 13px; color: var(--muted);
+      display: flex; align-items: flex-start; gap: 7px; line-height: 1.6;
+    }
+    .req-list li::before {
+      content: "•"; color: var(--gold); font-size: 16px;
+      flex-shrink: 0; line-height: 1.4;
+    }
+
+    /* ── التذييل ── */
+    .footer {
+      text-align: center; margin-top: 40px;
+      font-size: 12px; color: var(--whisper);
+      line-height: 1.8;
+    }
+
+    /* ── الاستجابة ── */
+    @media (max-width: 560px) {
+      .card { padding: 28px 20px; }
+      .activation-box { padding: 22px 20px; }
+      .dl-item { flex-wrap: wrap; }
+      .dl-btn { width: 100%; justify-content: center; }
+      .reqs-grid { grid-template-columns: 1fr; }
+      .tabs { flex-direction: column; }
+      .tab-btn:first-child { border-left: none; border-bottom: 1px solid var(--line); }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- الشعار -->
+  <div class="brand">
+    <svg class="brand-mark" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="25" cy="25" r="23" stroke="#a87a3e" stroke-width="1.5"/>
+      <circle cx="25" cy="25" r="15" stroke="#a87a3e" stroke-width="1.2"/>
+      <circle cx="25" cy="25" r="7"  stroke="#a87a3e" stroke-width="1"/>
+      <circle cx="25" cy="25" r="2.5" fill="#a87a3e"/>
+    </svg>
+    <span class="brand-name">الهولنس وورك</span>
+    <span class="brand-sub">HolnessWork</span>
+  </div>
+
+  <!-- ══ قسم التنزيل ══ -->
+  <div class="card">
+    <h1 class="section-title">تنزيل التطبيق</h1>
+    <p class="section-sub">اختر النسخة المناسبة لجهازك</p>
+    <hr class="divider" />
+    <div class="downloads">
+
+      <!-- Windows -->
+      <a class="dl-item" href="https://github.com/Abdulmalik1986/WholenessWork/raw/main/WholenessWork_setup.exe">
+        <div class="dl-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 5.5L11 4.5V11.5H3V5.5Z" fill="#a87a3e"/>
+            <path d="M12 4.35L21 3V11.5H12V4.35Z" fill="#a87a3e" opacity=".7"/>
+            <path d="M3 12.5H11V19.5L3 18.5V12.5Z" fill="#a87a3e" opacity=".7"/>
+            <path d="M12 12.5H21V21L12 19.65V12.5Z" fill="#a87a3e" opacity=".5"/>
+          </svg>
+        </div>
+        <div class="dl-info">
+          <div class="dl-name">نسخة Windows</div>
+          <div class="dl-meta">ملف تثبيت متكامل • HolnessWork_Setup.exe</div>
+        </div>
+        <span class="dl-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3v13M5 14l7 7 7-7"/><path d="M3 21h18"/>
+          </svg>
+          تنزيل
+        </span>
+      </a>
+
+      <!-- Android -->
+      <a class="dl-item" href="https://github.com/Abdulmalik1986/WholenessWork/raw/main/WholenessWork.apk">
+        <div class="dl-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 18V10a6 6 0 0 1 12 0v8" stroke="#a87a3e" stroke-width="1.6" stroke-linecap="round"/>
+            <rect x="4" y="10" width="16" height="10" rx="2" stroke="#a87a3e" stroke-width="1.5" fill="none"/>
+            <circle cx="9" cy="15" r="1" fill="#a87a3e"/>
+            <circle cx="15" cy="15" r="1" fill="#a87a3e"/>
+            <path d="M8.5 6.5L7 5M15.5 6.5L17 5" stroke="#a87a3e" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="dl-info">
+          <div class="dl-name">نسخة Android</div>
+          <div class="dl-meta">تثبيت مباشر • HolnessWork.apk</div>
+        </div>
+        <span class="dl-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3v13M5 14l7 7 7-7"/><path d="M3 21h18"/>
+          </svg>
+          تنزيل
+        </span>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- ══ دليل التثبيت ══ -->
+  <div class="card">
+    <h2 class="section-title">دليل التثبيت خطوة بخطوة</h2>
+    <p class="section-sub">اختر نظام تشغيلك لعرض الخطوات المناسبة</p>
+
+    <!-- التبويبات -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('android')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <rect x="5" y="2" width="14" height="20" rx="2"/><line x1="9" y1="7" x2="15" y2="7"/><circle cx="12" cy="17" r="1"/>
+        </svg>
+        أندرويد (Android)
+      </button>
+      <button class="tab-btn" onclick="switchTab('windows')">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 5.5L10 4.5V11H3V5.5Z" fill="currentColor" opacity=".8"/>
+          <path d="M11 4.3L21 3V11H11V4.3Z" fill="currentColor" opacity=".6"/>
+          <path d="M3 12H10V19.5L3 18.5V12Z" fill="currentColor" opacity=".6"/>
+          <path d="M11 12H21V21L11 19.7V12Z" fill="currentColor" opacity=".4"/>
+        </svg>
+        ويندوز (Windows)
+      </button>
+    </div>
+
+    <!-- محتوى Android -->
+    <div class="tab-content active" id="tab-android">
+      <div class="steps">
+
+        <div class="step">
+          <div class="step-num">١</div>
+          <div class="step-body">
+            <div class="step-title">تحميل الملف</div>
+            <div class="step-desc">قم بتحميل ملف <strong>HolnessWork.apk</strong> مباشرةً إلى ذاكرة هاتفك أو جهازك اللوحي عبر زر التنزيل أعلاه.</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">٢</div>
+          <div class="step-body">
+            <div class="step-title">تفعيل التثبيت من مصادر مجهولة</div>
+            <div class="step-desc">
+              إذا ظهرت لك رسالة تحذيرية عند الضغط على الملف، انتقل إلى:<br>
+              <strong>الإعدادات (Settings) ← الحماية والخصوصية (Security & Privacy)</strong><br>
+              ثم فعّل خيار <strong>"تثبيت التطبيقات غير المعروفة" (Install Unknown Apps)</strong> للمتصفح أو لمدير الملفات.
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">٣</div>
+          <div class="step-body">
+            <div class="step-title">بدء التثبيت</div>
+            <div class="step-desc">افتح تطبيق <strong>"مدير الملفات" (Files)</strong> وتوجّه إلى مجلد التنزيلات <strong>(Downloads)</strong>، ثم اضغط على ملف <strong>HolnessWork.apk</strong>.</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">٤</div>
+          <div class="step-body">
+            <div class="step-title">تأكيد التثبيت</div>
+            <div class="step-desc">ستظهر لك نافذة تطلب تأكيد التثبيت، اضغط على <strong>"تثبيت" (Install)</strong>.</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">٥</div>
+          <div class="step-body">
+            <div class="step-title">رسالة Google Play Protect</div>
+            <div class="step-desc">في حال ظهور تحذير مفاده أن التطبيق غير معروف، اضغط على <strong>"التثبيت على أي حال" (Install anyway)</strong> — التطبيق آمن تماماً.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="notice">
+        <strong>ملاحظة:</strong> قد تختلف أسماء القوائم قليلاً بحسب إصدار نظام أندرويد وشركة الهاتف، لكن الفكرة الأساسية هي منح إذن التثبيت لمدير الملفات أو المتصفح.
+      </div>
+    </div>
+
+    <!-- محتوى Windows -->
+    <div class="tab-content" id="tab-windows">
+      <div class="steps">
+
+        <div class="step">
+          <div class="step-num">١</div>
+          <div class="step-body">
+            <div class="step-title">تحميل ملف التثبيت</div>
+            <div class="step-desc">قم بتحميل ملف <strong>HolnessWork_Setup.exe</strong> على جهاز الكمبيوتر الخاص بك عبر زر التنزيل أعلاه.</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">٢</div>
+          <div class="step-body">
+            <div class="step-title">تشغيل الملف كمسؤول</div>
+            <div class="step-desc">انقر بزر الفأرة الأيمن على ملف <strong>.exe</strong> واختر <strong>"التشغيل كمسؤول" (Run as administrator)</strong> لضمان منح الصلاحيات الكاملة.</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">٣</div>
+          <div class="step-body">
+            <div class="step-title">تجاوز حماية SmartScreen (إن ظهرت)</div>
+            <div class="step-desc">
+              قد يظهر لك الجدار الأزرق <strong>(Windows Defender SmartScreen)</strong> لأن الملف مستقل وغير موقَّع رقمياً.<br>
+              اضغط على <strong>"مزيد من المعلومات" (More info)</strong> ثم اضغط على <strong>"التشغيل على أي حال" (Run anyway)</strong>.
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">٤</div>
+          <div class="step-body">
+            <div class="step-title">معالج التثبيت (Installation Wizard)</div>
+            <div class="step-desc">حدّد مسار التثبيت المطلوب أو اتركه على المسار الافتراضي، ثم اضغط <strong>Next ← Install</strong> حتى ينتهي شريط التقدم، ثم اضغط <strong>Finish</strong>.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ خطوة التفعيل ══ -->
+  <div class="activation-box">
+    <div class="activation-title">
+      خطوة تفعيل التطبيق
+      <span class="badge-important">هام جداً</span>
+    </div>
+    <p class="activation-desc">
+      لحماية بياناتك وضمان عمل التطبيق بشكل صحيح، يعتمد <strong>HolnessWork</strong> على نظام تفعيل مخصص لكل جهاز. اتبع الخطوات الآتية فور انتهائك من التثبيت:
+    </p>
+
+    <div class="activation-steps">
+      <div class="act-step">
+        <div class="act-num">١</div>
+        <div class="act-text">افتح تطبيق <strong>HolnessWork</strong> من هاتفك أو من سطح المكتب.</div>
+      </div>
+      <div class="act-step">
+        <div class="act-num">٢</div>
+        <div class="act-text">ستظهر واجهة تطلب كود التفعيل وتحتوي على <strong>"كود معرّف الجهاز" (Device ID)</strong> الخاص بك.</div>
+      </div>
+      <div class="act-step">
+        <div class="act-num">٣</div>
+        <div class="act-text">قم بـ <strong>نسخ هذا الكود</strong> كاملاً.</div>
+      </div>
+      <div class="act-step">
+        <div class="act-num">٤</div>
+        <div class="act-text">أرسل الكود إلى مطور التطبيق مباشرةً عبر <strong>واتس آب</strong> على الرقم التالي:</div>
+      </div>
+    </div>
+
+    <a class="whatsapp-btn" href="https://wa.me/96896767693" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
+      +968 96767693
+    </a>
+
+    <div class="activation-note">
+      <strong>•</strong> بمجرد استلام المطور لمعرّف جهازك، سيُرسل إليك <strong>كود التفعيل الخاص بك</strong> الذي يفتح التطبيق معك بشكل دائم.
+    </div>
+  </div>
+
+  <!-- ══ متطلبات التشغيل ══ -->
+  <div class="card">
+    <h2 class="section-title">متطلبات التشغيل</h2>
+    <hr class="divider" />
+    <div class="reqs-grid">
+
+      <div class="req-box">
+        <div class="req-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#a87a3e" stroke-width="1.6" stroke-linecap="round">
+            <rect x="5" y="2" width="14" height="20" rx="2"/><line x1="9" y1="7" x2="15" y2="7"/><circle cx="12" cy="17" r="1"/>
+          </svg>
+          نسخة الأندرويد
+        </div>
+        <ul class="req-list">
+          <li>نظام أندرويد 5.0 (Lollipop) أو أحدث</li>
+          <li>مساحة تخزينية لا تقل عن 50 ميجابايت</li>
+          <li>السماح بصلاحية الوصول للملفات</li>
+        </ul>
+      </div>
+
+      <div class="req-box">
+        <div class="req-title">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 5.5L10 4.5V11H3V5.5Z" fill="#a87a3e" opacity=".9"/>
+            <path d="M11 4.3L21 3V11H11V4.3Z" fill="#a87a3e" opacity=".65"/>
+            <path d="M3 12H10V19.5L3 18.5V12Z" fill="#a87a3e" opacity=".65"/>
+            <path d="M11 12H21V21L11 19.7V12Z" fill="#a87a3e" opacity=".45"/>
+          </svg>
+          نسخة الويندوز
+        </div>
+        <ul class="req-list">
+          <li>Windows 7 أو أحدث (64-بت)</li>
+          <li>بطاقة رسوميات تدعم OpenGL 2.0</li>
+          <li>ذاكرة عشوائية (RAM) بسعة 2GB أو أعلى</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- التذييل -->
+  <div class="footer">
+    © الهولنس وورك — جميع الحقوق محفوظة<br>
+    للاستفسارات تواصل عبر واتس آب: <a href="https://wa.me/96896767693" style="color:var(--gold);text-decoration:none;">+968 96767693</a>
+  </div>
+
+</div>
+
+<script>
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    event.currentTarget.classList.add('active');
+  }
+</script>
+</body>
+</html>
