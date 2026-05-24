@@ -145,6 +145,18 @@
     .dl-name { font-family: var(--display); font-size: 19px; font-weight: 500; color: var(--ink); line-height: 1.2; }
     .dl-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
+    .version-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(168,122,62,.12);
+      border: 1px solid rgba(168,122,62,.25);
+      color: var(--gold);
+      font-size: 11px; font-weight: 600;
+      padding: 3px 10px; border-radius: 20px;
+      letter-spacing: 0.04em; margin-top: 4px;
+      transition: opacity 0.3s;
+    }
+    .version-badge.loading { opacity: 0.5; }
+
     .dl-btn {
       display: flex; align-items: center; gap: 6px;
       background: var(--gold); color: #fff;
@@ -346,6 +358,7 @@
         <div class="dl-info">
           <div class="dl-name">نسخة Windows</div>
           <div class="dl-meta">ملف تثبيت متكامل • HolnessWork_Setup.exe</div>
+          <span class="version-badge loading" id="ver-win">⟳ جارٍ التحقق...</span>
         </div>
         <span class="dl-btn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -369,6 +382,7 @@
         <div class="dl-info">
           <div class="dl-name">نسخة Android</div>
           <div class="dl-meta">تثبيت مباشر • HolnessWork.apk</div>
+          <span class="version-badge loading" id="ver-apk">⟳ جارٍ التحقق...</span>
         </div>
         <span class="dl-btn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -599,6 +613,37 @@
     document.getElementById('tab-' + tab).classList.add('active');
     event.currentTarget.classList.add('active');
   }
+
+  // ── جلب الإصدار تلقائياً من version.json في GitHub ──
+  const REPO = 'Abdulmalik1986/WholenessWork';
+  const FALLBACK_VERSION = '1.2';
+
+  async function fetchVersion() {
+    try {
+      const res = await fetch(
+        `https://raw.githubusercontent.com/${REPO}/main/version.json`,
+        { cache: 'no-cache' }
+      );
+      if (!res.ok) throw new Error('not found');
+      const data = await res.json();
+      return data.version || FALLBACK_VERSION;
+    } catch {
+      return FALLBACK_VERSION;
+    }
+  }
+
+  function setVersion(version) {
+    const label = `v${version}`;
+    ['ver-win', 'ver-apk'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.textContent = label;
+        el.classList.remove('loading');
+      }
+    });
+  }
+
+  fetchVersion().then(setVersion);
 </script>
 </body>
 </html>
