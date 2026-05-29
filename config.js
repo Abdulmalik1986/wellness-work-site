@@ -13,3 +13,7 @@ window.HOLNESS_WHATSAPP = "+96896767693";
 
 // الرسالة المُسبَقة في واتساب
 window.HOLNESS_WHATSAPP_MESSAGE = "السلام عليكم، أود الاستفسار عن دورة الهولنس وورك.";
+
+// رابط الموقع المنشور (يُستخدَم في أزرار المشاركة). اترُكه فارغاً ليأخذ الرابط الحالي تلقائياً.
+// مثال بعد النشر: "https://your-domain.com"
+window.HOLNESS_SITE_URL = "https://wellness-work-site.vercel.app/";
